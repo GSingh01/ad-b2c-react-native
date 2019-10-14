@@ -1,5 +1,7 @@
 React Native Azure AD B2C solution using Pure JS. If you are using expo you dont need to eject. Following explains the usage. Feel free to contribute or sponsor. Thanks
 
+Thanks to https://github.com/sonyarouje/react-native-ad-b2c and https://github.com/wkh237/react-native-azure-ad packages for the inspiration.
+
 ### Login screen
 ```
 import React from 'react';
