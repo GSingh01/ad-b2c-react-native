@@ -122,3 +122,23 @@ const navigator = createSwitchNavigator(
 );
 const routes = createAppContainer(navigator);
 ```
+
+### Get Access Token
+
+Call  adService.getAccessTokenAsync() anywhere in your solution to get latest access token. The token is cached and if expired will use refresh token to get new one seamlessly. Make sure to await or use promise api to use the method.
+
+```
+import { adService } from 'ad-b2c-react-native';
+
+await adService.getAccessTokenAsync();
+```
+
+### Get ID Token
+
+The idToken is retrievable only after a successful login. Decode it using the library of choice to get user info
+
+```
+import { adService } from 'ad-b2c-react-native';
+
+await adService.getIdToken();
+```
