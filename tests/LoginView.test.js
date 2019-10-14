@@ -2,8 +2,8 @@ import React from 'react';
 import {Text} from 'react-native';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json'
-import LoginView from './LoginView';
-import adService from './ADService';
+import LoginView from '../src/LoginView';
+import adService from '../src/ADService';
 
 describe('LoginView',() => {
     const props = {

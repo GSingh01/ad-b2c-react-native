@@ -1,3 +1,3 @@
-export { default as LoginView } from './LoginView';
-export { default as adService } from './ADService';
-export { default as LogoutView } from './LogoutView';
+export { default as LoginView } from './src/LoginView';
+export { default as adService } from './src/ADService';
+export { default as LogoutView } from './src/LogoutView';

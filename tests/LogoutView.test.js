@@ -2,8 +2,8 @@ import React from 'react';
 import {Text} from 'react-native';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json'
-import LogoutView from './LogoutView';
-import adService from './ADService';
+import LogoutView from '../src/LogoutView';
+import adService from '../src/ADService';
 
 describe('LogoutView',()=>{
     const props = {

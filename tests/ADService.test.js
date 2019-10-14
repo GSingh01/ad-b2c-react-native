@@ -1,4 +1,4 @@
-import {ADService} from "./ADService";
+import {ADService} from "../src/ADService";
 
 let adService;
 const props = {
