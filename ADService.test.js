@@ -353,4 +353,42 @@ describe('ADService', ()=>{
             expect(typeof data).toBe('undefined');
         });
     });
+
+    describe('getIdToken', ()=>{
+        
+        test('return idToken', async ()=>{
+
+            const tokenResult = {
+                tokenType:"testType",
+                accessToken:"testAccessToken",
+                refreshToken:"testRefreshToken",
+                idToken:"testIdToken",
+                expiresOn : new Date().getTime() - 10000
+            };
+            props.secureStore.getItemAsync.mockImplementation(key => {
+                let result = "";
+                if(key==="tokenType"){
+                    result = tokenResult.tokenType;
+                }
+                if(key === "accessToken"){
+                    result = tokenResult.accessToken;
+                }
+                if(key === "idToken"){
+                    result = tokenResult.idToken;
+                }
+                if(key === "refreshToken"){
+                    result = tokenResult.refreshToken;
+                }
+                if(key === "expiresOn"){
+                    result = tokenResult.expiresOn;
+                }
+                return Promise.resolve(result);
+            });
+            await adService.isAuthenticAsync();
+
+            const result = adService.getIdToken();
+
+            expect(result).toBe(tokenResult.idToken);
+        });
+    });
 });
