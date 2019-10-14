@@ -1,4 +1,4 @@
-React Native Azure AD B2C solution using Pure JS. If you are using expo you dont need to eject. Following explain the usage. Feel free to contribute or sponsor. Thanks
+React Native Azure AD B2C solution using Pure JS. If you are using expo you dont need to eject. Following explains the usage. Feel free to contribute or sponsor. Thanks
 
 ### Login screen
 ```
