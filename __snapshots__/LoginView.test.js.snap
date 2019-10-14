@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoginView renders correctly when loaded 1`] = `
+<WebView
+  appId="testAppId"
+  cacheEnabled={true}
+  javaScriptEnabled={true}
+  loginPolicy="testLoginPolicy"
+  onFail={[MockFunction]}
+  onNavigationStateChange={[Function]}
+  onShouldStartLoadWithRequest={[Function]}
+  onSuccess={[MockFunction]}
+  originWhitelist={
+    Array [
+      "*",
+    ]
+  }
+  passwordResetPolicy="testPasswordReset"
+  profileEditPolicy="testProfileId"
+  redirectURI="test//redirectURI"
+  renderLoading={[Function]}
+  secureStore={[MockFunction]}
+  source={
+    Object {
+      "uri": "https://TestTenant.b2clogin.com/TestTenant.onmicrosoft.com/testLoginPolicy/oauth2/v2.0/authorize?client_id=testAppId&response_type=code&redirect_uri=test//redirectURI&response_mode=query&scope=testAppId%20offline_access",
+    }
+  }
+  startInLoadingState={true}
+  tenant="TestTenant"
+  useSharedProcessPool={true}
+/>
+`;
+
+exports[`LoginView renders correctly when loading 1`] = `
+<Text>
+  loading
+</Text>
+`;

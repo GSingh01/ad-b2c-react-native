@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LogoutView renders correctly 1`] = `
+<WebView
+  cacheEnabled={true}
+  javaScriptEnabled={true}
+  onError={[Function]}
+  onFail={[MockFunction]}
+  onLoadEnd={[Function]}
+  onShouldStartLoadWithRequest={[Function]}
+  onSuccess={[MockFunction]}
+  originWhitelist={
+    Array [
+      "*",
+    ]
+  }
+  renderLoading={[Function]}
+  source={
+    Object {
+      "uri": "https://TestTenant.b2clogin.com/TestTenant.onmicrosoft.com/testLoginPolicy/oauth2/v2.0/logout?post_logout_redirect_uri=test//redirectURI",
+    }
+  }
+  startInLoadingState={true}
+  useSharedProcessPool={true}
+/>
+`;
