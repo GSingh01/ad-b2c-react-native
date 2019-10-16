@@ -18,7 +18,7 @@ describe('LogoutView',()=>{
         tenant:"TestTenant",
         loginPolicy:"testLoginPolicy",
         passwordResetPolicy:"testPasswordReset",
-        profileEditPolicy:"testProfileId", 
+        profileEditPolicy:"testProfileEditPolicy", 
     });
 
     test('renders correctly', () => {

@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditView renders correctly 1`] = `
+<WebView
+  cacheEnabled={true}
+  javaScriptEnabled={true}
+  onError={[Function]}
+  onFail={[MockFunction]}
+  onNavigationStateChange={[Function]}
+  onShouldStartLoadWithRequest={[Function]}
+  onSuccess={[MockFunction]}
+  originWhitelist={
+    Array [
+      "*",
+    ]
+  }
+  renderLoading={[Function]}
+  source={
+    Object {
+      "uri": "https://TestTenant.b2clogin.com/TestTenant.onmicrosoft.com/testProfileEditPolicy/oauth2/v2.0/authorize?client_id=testAppId&response_type=code&redirect_uri=test//redirectURI&response_mode=query&scope=testAppId%20offline_access",
+    }
+  }
+  startInLoadingState={true}
+  useSharedProcessPool={true}
+/>
+`;

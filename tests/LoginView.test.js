@@ -323,7 +323,7 @@ describe('LoginView',() => {
                 adService.fetchAndSetTokenAsync = jest.fn();
                 adService.fetchAndSetTokenAsync.mockResolvedValue({isValid:true});
 
-                await callbackAsync({url:"passwordResetTestUrl"});
+                await callbackAsync({url:"doesNotMatter"});
 
                 expect(adService.fetchAndSetTokenAsync).toHaveBeenCalledTimes(1);
                 expect(adService.fetchAndSetTokenAsync).toHaveBeenCalledWith(expectedResult.data);
@@ -334,7 +334,7 @@ describe('LoginView',() => {
                 adService.fetchAndSetTokenAsync = jest.fn();
                 adService.fetchAndSetTokenAsync.mockResolvedValue({isValid:true})
                 
-                await callbackAsync({url:"passwordResetTestUrl"});
+                await callbackAsync({url:"doesNotMatter"});
 
                 expect(props.onSuccess).toHaveBeenCalledTimes(1);
             });
@@ -345,7 +345,7 @@ describe('LoginView',() => {
                 const error = "test invalid message";
                 adService.fetchAndSetTokenAsync.mockResolvedValue({isValid:false, data:error})
                 
-                await callbackAsync({url:"passwordResetTestUrl"});
+                await callbackAsync({url:"doesNotMatter"});
 
                 expect(props.onFail).toHaveBeenCalledTimes(1);
                 expect(props.onFail).toHaveBeenCalledWith(error);

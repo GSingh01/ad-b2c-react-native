@@ -6,6 +6,7 @@ const props = {
     appId:"testId",
     loginPolicy:"testloginPolicy",
     passwordResetPolicy:"testPasswordResetPolicy",
+    profileEditPolicy:'testProfileEditPolicy',
     redirectURI:"test redirectURI",
     secureStore:{
         "deleteItemAsync": jest.fn(),
@@ -63,7 +64,7 @@ describe('ADService', ()=>{
                 accessToken:"testAccessToken",
                 idToken:"test id token",
                 refreshToken:"refresh token",
-                expiresOn : new Date().getTime()
+                expiresOn : new Date().getTime()/1000
             };
             props.secureStore.getItemAsync.mockImplementation(key => {
                 let result = "";
@@ -97,7 +98,7 @@ describe('ADService', ()=>{
                 accessToken:"testAccessToken",
                 idToken:"test id token",
                 refreshToken:"refresh token",
-                expiresOn : new Date().getTime() + 60000
+                expiresOn : new Date().getTime()/1000 + 60000
             };
             props.secureStore.getItemAsync.mockImplementation(key => {
                 let result = "";
@@ -133,7 +134,7 @@ describe('ADService', ()=>{
                 accessToken:"testAccessToken",
                 idToken:"test id token",
                 refreshToken:"refresh token",
-                expiresOn : new Date().getTime() + 60000
+                expiresOn : new Date().getTime()/1000 + 60000
             };
             props.secureStore.getItemAsync.mockImplementation(key => {
                 let result = "";
@@ -168,7 +169,7 @@ describe('ADService', ()=>{
                 tokenType:"testType",
                 accessToken:"testAccessToken",
                 refreshToken:"testRefreshToken",
-                expiresOn : new Date().getTime() - 10000
+                expiresOn : new Date().getTime()/1000 - 10000
             };
             props.secureStore.getItemAsync.mockImplementation(key => {
                 let result = "";
@@ -228,7 +229,7 @@ describe('ADService', ()=>{
             await testInvalidAuthCode(null);
         });
 
-        test('calls fetch with correct parms', async ()=>{
+        test('calls fetch with correct parms when isProfileEdit not set', async ()=>{
             await adService.fetchAndSetTokenAsync("testCode");
 
             const expectedUrl = "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testloginPolicy/oauth2/v2.0/token?";
@@ -238,13 +239,22 @@ describe('ADService', ()=>{
             expect(fetch).toHaveBeenCalledWith(expectedUrl,expectedArg2);
         });
 
+        test('calls fetch with correct parms when isProfileEdit set', async ()=>{
+            await adService.fetchAndSetTokenAsync("testCode", true);
+
+            const expectedUrl = "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testProfileEditPolicy/oauth2/v2.0/token?";
+            const expectedArg2 = {"body": "grant_type=authorization_code&client_id=testId&scope=testId%20offline_access&code=testCode&redirect_uri=test%2520redirectURI", "headers": {"Content-Type": "application/x-www-form-urlencoded"}, "method": "POST"}
+            
+            expect(fetch).toHaveBeenCalledTimes(1);
+            expect(fetch).toHaveBeenCalledWith(expectedUrl,expectedArg2);
+        });
         test('calls secureStore.setItemAsync with correct params', async ()=>{
             const fetchResult = {
                 token_type:"testType",
                 access_token:"testAccessToken",
                 id_token:"test id token",
                 refresh_token:"refresh token",
-                expires_on : new Date().getTime() + 60000
+                expires_on : new Date().getTime()/1000 + 60000
             };
             fetch.mockResponse(JSON.stringify(fetchResult));
 
@@ -255,7 +265,7 @@ describe('ADService', ()=>{
             expect(props.secureStore.setItemAsync).toHaveBeenCalledWith("accessToken", fetchResult.access_token);
             expect(props.secureStore.setItemAsync).toHaveBeenCalledWith("idToken", fetchResult.id_token);
             expect(props.secureStore.setItemAsync).toHaveBeenCalledWith("refreshToken", fetchResult.refresh_token);
-            expect(props.secureStore.setItemAsync).toHaveBeenCalledWith("expiresOn", fetchResult.expires_on);
+            expect(props.secureStore.setItemAsync).toHaveBeenCalledWith("expiresOn", fetchResult.expires_on.toString());
         });
 
         test('returns invalid when exception occurs', async ()=>{
@@ -270,7 +280,10 @@ describe('ADService', ()=>{
 
         test('returns invalid when fetch response is not ok', async ()=>{
             const error = "Not ok test";
-            fetch.mockResolvedValue(fetch.Response(error,{ status: 400 } ));
+            const jsonMock = jest.fn();
+            const response = {ok:false, json:jsonMock};
+            jsonMock.mockResolvedValue({ error: "test error", error_description : error});
+            fetch.mockResolvedValue(response, { status: 400 });
 
             const result = await adService.fetchAndSetTokenAsync("testCode");
 
@@ -363,7 +376,7 @@ describe('ADService', ()=>{
                 accessToken:"testAccessToken",
                 refreshToken:"testRefreshToken",
                 idToken:"testIdToken",
-                expiresOn : new Date().getTime() - 10000
+                expiresOn : new Date().getTime()/1000 - 10000
             };
             props.secureStore.getItemAsync.mockImplementation(key => {
                 let result = "";

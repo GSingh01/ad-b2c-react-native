@@ -39,10 +39,9 @@ export default class LogoutView extends React.PureComponent {
     const { renderLoading, ...rest } = this.props;
     return (
       <WebView
-        {...rest}  
+        {...rest}
         originWhitelist={['*']} // refer: https://github.com/facebook/react-native/issues/20917
         source={{ uri: this.state.uri }}
-        onNavigationStateChange={this.onNavigationStateChange}
         onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
         renderLoading={renderLoading}
         startInLoadingState
@@ -51,7 +50,6 @@ export default class LogoutView extends React.PureComponent {
         ref={c => {
           this.webView = c;
         }}
-        
       />
     );
   }

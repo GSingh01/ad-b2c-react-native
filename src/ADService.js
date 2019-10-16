@@ -3,24 +3,24 @@ import { RequestType } from './Constants';
 import Result from './Result';
 
 class ADService {
-  
-  init = (props)=> {
+  init = props => {
     this.tenant = props.tenant;
     this.appId = props.appId;
     this.loginPolicy = props.loginPolicy;
     this.passwordResetPolicy = props.passwordResetPolicy;
+    this.profileEditPolicy = props.profileEditPolicy;
     this.redirectURI = encodeURI(props.redirectURI);
     this.scope = encodeURI(`${this.appId} offline_access`);
     this.response_mode = 'query';
     this.tokenResult = {};
     this.secureStore = props.secureStore;
     this.baseUri = `https://${this.tenant}.b2clogin.com/${this.tenant}.onmicrosoft.com`;
-    
-    this.TokenTypeKey = "tokenType";
-    this.AccessTokenKey ="accessToken";
-    this.IdTokenKey = "idToken";
-    this.RefreshTokenKey = "refreshToken";
-    this.ExpiresOnKey = "expiresOn";
+
+    this.TokenTypeKey = 'tokenType';
+    this.AccessTokenKey = 'accessToken';
+    this.IdTokenKey = 'idToken';
+    this.RefreshTokenKey = 'refreshToken';
+    this.ExpiresOnKey = 'expiresOn';
   };
 
   logoutAsync = async () => {
@@ -35,27 +35,33 @@ class ADService {
   };
 
   isAuthenticAsync = async () => {
-    let [tokenType, accessToken, refreshToken, idToken, expiresOn] = await Promise.all([
+    const [
+      tokenType,
+      accessToken,
+      refreshToken,
+      idToken,
+      expiresOn,
+    ] = await Promise.all([
       this.secureStore.getItemAsync(this.TokenTypeKey),
       this.secureStore.getItemAsync(this.AccessTokenKey),
       this.secureStore.getItemAsync(this.RefreshTokenKey),
       this.secureStore.getItemAsync(this.IdTokenKey),
-      this.secureStore.getItemAsync(this.ExpiresOnKey)
+      this.secureStore.getItemAsync(this.ExpiresOnKey),
     ]);
 
     this.tokenResult = {
-      tokenType: tokenType,
-      accessToken: accessToken,
-      idToken: idToken,
-      refreshToken: refreshToken,
-      expiresOn: expiresOn,
+      tokenType,
+      accessToken,
+      idToken,
+      refreshToken,
+      expiresOn: parseInt(expiresOn),
     };
-    
+
     return this._isTokenValid(this.tokenResult);
   };
 
   _isTokenValid = tokenResult =>
-    tokenResult && new Date().getTime() < tokenResult.expiresOn;
+    tokenResult && new Date().getTime() < tokenResult.expiresOn * 1000;
 
   getAccessTokenAsync = async () => {
     if (!this._isTokenValid(this.tokenResult)) {
@@ -67,7 +73,7 @@ class ADService {
         return result;
       }
     }
-    
+
     return Result(
       true,
       `${this.tokenResult.tokenType} ${this.tokenResult.accessToken}`,
@@ -76,9 +82,9 @@ class ADService {
 
   getIdToken = () => this.tokenResult.idToken;
 
-  fetchAndSetTokenAsync = async authCode => {
-    if(!authCode){
-      return Result(false, "Empty auth code");
+  fetchAndSetTokenAsync = async (authCode, isProfileEdit) => {
+    if (!authCode) {
+      return Result(false, 'Empty auth code');
     }
     try {
       const params = {
@@ -89,7 +95,10 @@ class ADService {
         redirect_uri: this.redirectURI,
       };
       const body = this.getFormUrlEncoded(params);
-      const url = this._getStaticURI(this.loginPolicy, 'token');
+      const url = this._getStaticURI(
+        isProfileEdit ? this.profileEditPolicy : this.loginPolicy,
+        'token',
+      );
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -99,9 +108,10 @@ class ADService {
       });
 
       if (!response.ok) {
-        throw new Error(response.body);
+        const data = await response.json();
+        throw new Error(data.error_description);
       }
-      
+
       await this._setTokenDataAsync(response);
       return Result(true);
     } catch (error) {
@@ -124,10 +134,13 @@ class ADService {
       this.secureStore.setItemAsync(this.AccessTokenKey, res.access_token),
       this.secureStore.setItemAsync(this.RefreshTokenKey, res.refresh_token),
       this.secureStore.setItemAsync(this.IdTokenKey, res.id_token),
-      this.secureStore.setItemAsync(this.ExpiresOnKey, res.expires_on),
+      this.secureStore.setItemAsync(
+        this.ExpiresOnKey,
+        res.expires_on.toString(),
+      ),
     );
   };
-  
+
   getFormUrlEncoded = params =>
     Object.keys(params)
       .map(
@@ -151,7 +164,11 @@ class ADService {
   getLogoutURI = () =>
     `${this.baseUri}/${this.loginPolicy}/oauth2/v2.0/logout?post_logout_redirect_uri=${this.redirectURI}`;
 
-  getPasswordResetURI = () => `${this._getStaticURI(this.passwordResetPolicy, 'authorize')}`;
+  getPasswordResetURI = () =>
+    `${this._getStaticURI(this.passwordResetPolicy, 'authorize')}`;
+
+  getProfileEditURI = () =>
+    `${this._getStaticURI(this.profileEditPolicy, 'authorize')}`;
 
   getLoginFlowResult = url => {
     const params = this._getQueryParams(url);
@@ -212,4 +229,4 @@ class ADService {
 
 const adService = new ADService();
 export default adService;
-export {ADService};
+export { ADService };

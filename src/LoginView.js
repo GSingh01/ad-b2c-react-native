@@ -24,8 +24,12 @@ export default class LoginView extends PureComponent {
   }
 
   async componentDidMount() {
-    await adService.isAuthenticAsync();
-    this.setState({ loaded: true });
+    const isAuthentic = await adService.isAuthenticAsync();
+    if (isAuthentic) {
+      this.props.onSuccess();
+    } else {
+      this.setState({ loaded: true });
+    }
   }
 
   async onNavigationStateChangeAsync(navState) {
@@ -98,11 +102,10 @@ export default class LoginView extends PureComponent {
     return (
       <WebView
         {...rest}
-        originWhitelist={['*']} //refer: https://github.com/facebook/react-native/issues/20917
+        originWhitelist={['*']} // refer: https://github.com/facebook/react-native/issues/20917
         source={{ uri }}
         onNavigationStateChange={this.onNavigationStateChangeAsync}
         onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
-        onLoadEnd={this.onLoadEnd}
         renderLoading={renderLoading}
         startInLoadingState
         ref={c => {
