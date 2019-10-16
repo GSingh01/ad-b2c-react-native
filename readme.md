@@ -103,12 +103,67 @@ export default class Logout extends React.PureComponent {
 }
 ```
 
+### Edit profile screen
+```
+import React from 'react';
+import { Alert } from 'react-native';
+import { EditView } from 'ad-b2c-react-native';
+
+export default class EditProfile extends React.PureComponent {
+  static navigationOptions = { header: null };
+
+  constructor(props) {
+    super(props);
+    this.onSuccess = this.onSuccess.bind(this);
+    this.onFail = this.onFail.bind(this);
+    this.spinner = this.spinner.bind(this);
+  }
+
+  onSuccess() {
+    const { navigation } = this.props;
+    navigation.navigate('Auth');
+  }
+
+  onFail(reason) {
+    Alert.alert(reason);
+  }
+
+  spinner() {
+      return (
+        <CView>
+            <Spinner />
+        </CView>
+    );  
+  }
+
+  render() {
+    return <EditView 
+             onSuccess={this.onSuccess}
+             onFail={this.onFail}
+             renderLoading={spinner}
+            />;
+  }
+}
+```
+
 ### Routes
 ```
+import {
+  createStackNavigator,
+  createAppContainer,
+  createSwitchNavigator,
+} from 'react-navigation';
+
+import Home from './Home';
+import Login from './Login';
+import Logout from './Logout';
+import EditProfile from './EditProfile';
+
 const AuthStack = createStackNavigator({ Login });
 const AppStack = createStackNavigator(
   {
     Home,
+    EditProfile,
     Logout,
   }
 );
