@@ -103,7 +103,7 @@ export default class Logout extends React.PureComponent {
 }
 ```
 
-### Edit profile screen
+### Profile Edit screen
 ```
 import React from 'react';
 import { Alert } from 'react-native';
