@@ -1,7 +1,7 @@
 {
   "name": "ad-b2c-react-native",
   "version": "1.0.0",
-  "description": "React Native Azure B2C auth using pure JS. This doesn't require eject from expo.",
+  "description": "React Native Azure B2C auth using JS. This doesn't require eject from expo.",
   "main": "index.js",
   "files": [
     "index.js",
