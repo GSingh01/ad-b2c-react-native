@@ -44,6 +44,7 @@ describe('LoginView',() => {
     });
 
     describe('componentDidMount', ()=>{
+        
         test('calls adService.isAuthenticAsync', async ()=>{
             adService.isAuthenticAsync = jest.fn()
             adService.isAuthenticAsync.mockResolvedValue();
@@ -56,6 +57,43 @@ describe('LoginView',() => {
             expect(adService.isAuthenticAsync).toHaveBeenCalledTimes(1);
         });
 
+        test('calls props.Success and loaded state is false when isAuthenticAsync returns true', async ()=>{
+            adService.isAuthenticAsync = jest.fn()
+            adService.isAuthenticAsync.mockResolvedValue(true);
+
+            const wrapper = shallow( <LoginView {...props} />);
+            const instance = wrapper.instance();
+            
+            await instance.componentDidMount();
+            props.onSuccess.mockClear();// had to do a fake run and mockclear due to async componentdid mount
+            
+            jest.spyOn(instance,"setState");
+
+            await instance.componentDidMount();
+
+            expect(props.onSuccess).toHaveBeenCalledTimes(1);
+            expect(instance.setState).not.toHaveBeenCalled();
+        });
+        
+        test('donot calls props.onSuccess when isAuthenticAsync returns false and sets loaded state to true;', async ()=>{
+            adService.isAuthenticAsync = jest.fn()
+            adService.isAuthenticAsync.mockResolvedValue(false);
+
+            const wrapper = shallow( <LoginView {...props} />);
+            const instance = wrapper.instance();
+
+            await instance.componentDidMount();
+            props.onSuccess.mockClear(); // had to do a fake run and mockclear due to async componentdid mount
+            
+            jest.spyOn(instance,"setState");
+            
+            await instance.componentDidMount();
+
+            expect(props.onSuccess).not.toHaveBeenCalled();
+            expect(instance.setState).toHaveBeenCalledTimes(1);
+            expect(instance.setState).toHaveBeenCalledWith({loaded:true});
+        });
+
         test('sets loaded state', async ()=>{
             adService.isAuthenticAsync = jest.fn()
             adService.isAuthenticAsync.mockResolvedValue();
@@ -64,6 +102,7 @@ describe('LoginView',() => {
             
             adService.isAuthenticAsync.mockClear();
             const instance = wrapper.instance()
+            
             await instance.componentDidMount();
 
             expect(instance.state.loaded).toBe(true);
@@ -217,11 +256,11 @@ describe('LoginView',() => {
     function Test_HandleFlowResultAsync(callbackAsync, instance){
 
         describe('RequestType.PasswordReset',()=>{
-            const spy = jest.spyOn(instance,'setState');
+            jest.spyOn(instance,'setState');
 
             beforeEach(()=>{
                 adService.getLoginFlowResult.mockReturnValue({requestType:'passwordReset'});
-                spy.mockClear();
+                instance.setState.mockClear();
             });
 
             test('calls adService.getPasswordResetURI', async ()=>{
@@ -240,8 +279,8 @@ describe('LoginView',() => {
 
                 await callbackAsync({url:"passwordResetTestUrl"});
 
-                expect(spy).toHaveBeenCalledTimes(1);
-                expect(spy).toHaveBeenCalledWith({ uri: expectedURI });
+                expect(instance.setState).toHaveBeenCalledTimes(1);
+                expect(instance.setState).toHaveBeenCalledWith({ uri: expectedURI });
             });
 
             test('Dont sets URI when it is same', async ()=>{
@@ -252,16 +291,16 @@ describe('LoginView',() => {
 
                 await callbackAsync({url:uri});
 
-                expect(spy).not.toHaveBeenCalled();
+                expect(instance.setState).not.toHaveBeenCalled();
             });
         });
 
         describe('RequestType.Cancelled',() => {
-            const spy = jest.spyOn(instance,'setState');
+            jest.spyOn(instance,'setState');
 
             beforeEach(()=>{
                 adService.getLoginFlowResult.mockReturnValue({requestType:'cancelled'});    
-                spy.mockClear();
+                instance.setState.mockClear();
             });
 
             test('calls adService.getLoginURI', async ()=>{
@@ -280,8 +319,8 @@ describe('LoginView',() => {
 
                 await callbackAsync({url:"doesnotMatter"});
 
-                expect(spy).toHaveBeenCalledTimes(1);
-                expect(spy).toHaveBeenCalledWith({uri :expectedURI});
+                expect(instance.setState).toHaveBeenCalledTimes(1);
+                expect(instance.setState).toHaveBeenCalledWith({uri :expectedURI});
             });
 
             test('Sets URI with different uri when current URI is same as new', async ()=>{
@@ -293,20 +332,20 @@ describe('LoginView',() => {
 
                 await callbackAsync({url:"doesnotMatter"});
 
-                expect(spy).toHaveBeenCalledTimes(1);
+                expect(instance.setState).toHaveBeenCalledTimes(1);
                 
-                const setStateArg1 = spy.mock.calls[0][0];
+                const setStateArg1 = instance.setState.mock.calls[0][0];
                 
                 expect(setStateArg1.uri).toMatch(new RegExp(uri));
                 expect(setStateArg1.uri).not.toBe(uri);
 
-                spy.mockClear();
+                instance.setState.mockClear();
 
                 await callbackAsync({url:"doesnotMatter"});
                 
-                expect(spy).toHaveBeenCalledTimes(1);
+                expect(instance.setState).toHaveBeenCalledTimes(1);
                 
-                const setStateArg2 = spy.mock.calls[0][0];
+                const setStateArg2 = instance.setState.mock.calls[0][0];
                 expect(setStateArg2.uri).toMatch(new RegExp(uri));
                 expect(setStateArg2.uri).not.toBe(setStateArg1.uri);
             });
