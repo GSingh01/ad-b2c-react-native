@@ -12,12 +12,12 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - uses: codecov/codecov-action@v1.0.3
+      - run: npm ci
+      - run: npm test -- --coverage
+      - name: Codecov
+        uses: codecov/codecov-action@v1.0.0
         with:
           token: ${{secrets.CODECOV_TOKEN}}
-      - run: npm ci
-      - run: npm test
-
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
