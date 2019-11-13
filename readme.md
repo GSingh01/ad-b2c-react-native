@@ -1,3 +1,6 @@
+
+[![codecov](https://img.shields.io/codecov/c/github/GSingh01/ad-b2c-react-native)](https://codecov.io/gh/GSingh01/ad-b2c-react-native)
+
 React Native Azure AD B2C solution using Pure JS. If you are using expo you dont need to eject.
 
 Thanks to https://github.com/sonyarouje/react-native-ad-b2c and https://github.com/wkh237/react-native-azure-ad packages for the inspiration.
@@ -5,12 +8,14 @@ Thanks to https://github.com/sonyarouje/react-native-ad-b2c and https://github.c
 Feel free to contribute or sponsor. :)
 
 ## Installation
+
+> Don't forget to **install peer dependencies** "react": "^16.8.3", "react-native-webview": "^5.8.1"
 ```
 npm i ad-b2c-react-native -S
 ```
 
 ## Usage
-[**Note:** The code below is just a sample implementtation to just demonstrate the API of the components. As-Is copy paste of below will not work.]
+> The **code** below is just **a sample implementation** to just demonstrate the API of the components. As-Is **copy paste** of below **will not work**.
 
 ### Login screen
 ```
