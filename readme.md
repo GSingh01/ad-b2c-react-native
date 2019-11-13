@@ -10,6 +10,7 @@ npm i ad-b2c-react-native -S
 ```
 
 ## Usage
+[**Note:** The code below is just a sample implementtation to just demonstrate the API of the components. As-Is copy paste of below will not work.]
 
 ### Login screen
 ```
@@ -38,9 +39,11 @@ export default class Login extends React.PureComponent {
   }
 
   spinner() {
-      return (
-        <CView>
-            <Spinner />
+  //this is just a sample implementation, so copy pasting will not work as the components used below are custom
+  //and are not in imports above. Please replace it with your implementation.
+  return (
+        <CView> //custom wrapper around View
+            <Spinner /> //component wrapping loading status symbol(e.g spinner)
         </CView>
     );  
   }
@@ -61,7 +64,7 @@ export default class Login extends React.PureComponent {
         onSuccess={this.onLogin}
         onFail={this.onFail}
         secureStore={MySecureStore}
-        renderLoading={spinner}
+        renderLoading={this.spinner}
       />
     );
   }
@@ -95,6 +98,8 @@ export default class Logout extends React.PureComponent {
   }
 
   spinner() {
+  //this is just a sample implementation, so copy pasting will not work as the components used below are custom
+  //and are not in imports above. Please replace it with your implementation.
       return (
         <CView>
             <Spinner />
@@ -106,7 +111,7 @@ export default class Logout extends React.PureComponent {
     return <LogoutView 
              onSuccess={this.onSuccess}
              onFail={this.onFail}
-             renderLoading={spinner}
+             renderLoading={this.spinner}
             />;
   }
 }
@@ -138,6 +143,8 @@ export default class EditProfile extends React.PureComponent {
   }
 
   spinner() {
+  //this is just a sample implementation, so copy pasting will not work as the components used below are custom
+  //and are not in imports above. Please replace it with your implementation.
       return (
         <CView>
             <Spinner />
@@ -149,7 +156,7 @@ export default class EditProfile extends React.PureComponent {
     return <EditView 
              onSuccess={this.onSuccess}
              onFail={this.onFail}
-             renderLoading={spinner}
+             renderLoading={this.spinner}
             />;
   }
 }
@@ -196,7 +203,9 @@ Call  adService.getAccessTokenAsync() anywhere in your solution to get latest ac
 ```
 import { adService } from 'ad-b2c-react-native';
 
-await adService.getAccessTokenAsync();
+const tokenResult = await adService.getAccessTokenAsync(); 
+//tokenResult: {isValid: bool, data: string}
+//tokenResult.data: string of format 'type accessToken', e.g Bearer sampleAccessToken
 ```
 
 ### Get ID Token
