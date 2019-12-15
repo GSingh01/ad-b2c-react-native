@@ -195,7 +195,7 @@ describe('ADService', ()=>{
             await adService.getAccessTokenAsync();
 
             const expectedUrl = "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testloginPolicy/oauth2/v2.0/token?";
-            const expectedArg2 = {"body": "grant_type=authorization_code&client_id=testId&scope=testId%20offline_access&code=testRefreshToken&redirect_uri=test%2520redirectURI", "headers": {"Content-Type": "application/x-www-form-urlencoded"}, "method": "POST"}
+            const expectedArg2 = {"body": "client_id=testId&scope=testId%20offline_access&redirect_uri=test%2520redirectURI&grant_type=refresh_token&refresh_token=testRefreshToken", "headers": {"Content-Type": "application/x-www-form-urlencoded"}, "method": "POST"}
             
             expect(fetch).toHaveBeenCalledTimes(1);
             expect(fetch).toHaveBeenCalledWith(expectedUrl,expectedArg2);
@@ -233,7 +233,7 @@ describe('ADService', ()=>{
             await adService.fetchAndSetTokenAsync("testCode");
 
             const expectedUrl = "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testloginPolicy/oauth2/v2.0/token?";
-            const expectedArg2 = {"body": "grant_type=authorization_code&client_id=testId&scope=testId%20offline_access&code=testCode&redirect_uri=test%2520redirectURI", "headers": {"Content-Type": "application/x-www-form-urlencoded"}, "method": "POST"}
+            const expectedArg2 = {"body": "client_id=testId&scope=testId%20offline_access&redirect_uri=test%2520redirectURI&grant_type=authorization_code&code=testCode", "headers": {"Content-Type": "application/x-www-form-urlencoded"}, "method": "POST"}
             
             expect(fetch).toHaveBeenCalledTimes(1);
             expect(fetch).toHaveBeenCalledWith(expectedUrl,expectedArg2);
@@ -243,7 +243,7 @@ describe('ADService', ()=>{
             await adService.fetchAndSetTokenAsync("testCode", true);
 
             const expectedUrl = "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testProfileEditPolicy/oauth2/v2.0/token?";
-            const expectedArg2 = {"body": "grant_type=authorization_code&client_id=testId&scope=testId%20offline_access&code=testCode&redirect_uri=test%2520redirectURI", "headers": {"Content-Type": "application/x-www-form-urlencoded"}, "method": "POST"}
+            const expectedArg2 = {"body": "client_id=testId&scope=testId%20offline_access&redirect_uri=test%2520redirectURI&grant_type=authorization_code&code=testCode", "headers": {"Content-Type": "application/x-www-form-urlencoded"}, "method": "POST"}
             
             expect(fetch).toHaveBeenCalledTimes(1);
             expect(fetch).toHaveBeenCalledWith(expectedUrl,expectedArg2);

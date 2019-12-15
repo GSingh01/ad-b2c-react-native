@@ -67,6 +67,8 @@ class ADService {
     if (!this._isTokenValid(this.tokenResult)) {
       const result = await this.fetchAndSetTokenAsync(
         this.tokenResult.refreshToken,
+        false,
+        true
       );
 
       if (!result.isValid) {
@@ -82,18 +84,26 @@ class ADService {
 
   getIdToken = () => this.tokenResult.idToken;
 
-  fetchAndSetTokenAsync = async (authCode, isProfileEdit) => {
+  fetchAndSetTokenAsync = async (authCode, isProfileEdit, isRefreshTokenGrant) => {
     if (!authCode) {
       return Result(false, 'Empty auth code');
     }
+
     try {
-      const params = {
-        grant_type: 'authorization_code',
+      let params = {
         client_id: this.appId,
-        scope: `${this.appId} offline_access`,
-        code: authCode,
+        scope: `${this.appId} offline_access`,        
         redirect_uri: this.redirectURI,
       };
+
+      if(isRefreshTokenGrant){
+        params.grant_type = 'refresh_token';
+        params.refresh_token = authCode;
+      }else{
+        params.grant_type = 'authorization_code';
+        params.code= authCode;
+      }
+
       const body = this.getFormUrlEncoded(params);
       const url = this._getStaticURI(
         isProfileEdit ? this.profileEditPolicy : this.loginPolicy,
