@@ -9,7 +9,7 @@ Feel free to contribute or sponsor. :)
 
 ## Installation
 
-> Don't forget to **install peer dependencies** "react": "^16.8.3", "react-native-webview": "^5.8.1"
+> Don't forget to **install peer dependencies** "react": "^16.8.3", "react-native-webview": "^7.0.1"
 ```
 npm i ad-b2c-react-native -S
 ```

@@ -42,7 +42,7 @@
   "homepage": "https://github.com/GSingh01/ad-b2c-react-native#readme",
   "peerDependencies": {
     "react": "^16.8.3",
-    "react-native-webview": "^7.1.0"
+    "react-native-webview": "^7.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
@@ -58,7 +58,7 @@
     "react-addons-test-utils": "^15.6.2",
     "react-dom": "^16.9.0",
     "react-native": "^0.60.5",
-    "react-native-webview": "^7.0.1",
+    "react-native-webview": "^7.6.0",
     "react-test-renderer": "^16.9.0"
   }
 }
