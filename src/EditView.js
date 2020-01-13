@@ -52,7 +52,7 @@ export default class EditView extends React.PureComponent {
     if (result.requestType === RequestType.Code) {
       const reqResult = await adService.fetchAndSetTokenAsync(
         result.data,
-        true,
+        adService.profileEditPolicy,
       );
       if (reqResult.isValid) {
         this.props.onSuccess();

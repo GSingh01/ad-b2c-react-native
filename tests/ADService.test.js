@@ -229,25 +229,17 @@ describe('ADService', ()=>{
             await testInvalidAuthCode(null);
         });
 
-        test('calls fetch with correct parms when isProfileEdit not set', async ()=>{
-            await adService.fetchAndSetTokenAsync("testCode");
-
-            const expectedUrl = "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testloginPolicy/oauth2/v2.0/token?";
-            const expectedArg2 = {"body": "client_id=testId&scope=testId%20offline_access&redirect_uri=test%2520redirectURI&grant_type=authorization_code&code=testCode", "headers": {"Content-Type": "application/x-www-form-urlencoded"}, "method": "POST"}
-            
-            expect(fetch).toHaveBeenCalledTimes(1);
-            expect(fetch).toHaveBeenCalledWith(expectedUrl,expectedArg2);
-        });
-
         test('calls fetch with correct parms when isProfileEdit set', async ()=>{
-            await adService.fetchAndSetTokenAsync("testCode", true);
+            const policy = "testProfileEditPolicy";
+            await adService.fetchAndSetTokenAsync("testCode", policy);
 
-            const expectedUrl = "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testProfileEditPolicy/oauth2/v2.0/token?";
+            const expectedUrl = `https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/${policy}/oauth2/v2.0/token?`;
             const expectedArg2 = {"body": "client_id=testId&scope=testId%20offline_access&redirect_uri=test%2520redirectURI&grant_type=authorization_code&code=testCode", "headers": {"Content-Type": "application/x-www-form-urlencoded"}, "method": "POST"}
             
             expect(fetch).toHaveBeenCalledTimes(1);
             expect(fetch).toHaveBeenCalledWith(expectedUrl,expectedArg2);
         });
+        
         test('calls secureStore.setItemAsync with correct params', async ()=>{
             const fetchResult = {
                 token_type:"testType",

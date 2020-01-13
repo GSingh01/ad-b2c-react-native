@@ -2,8 +2,10 @@
 
 exports[`EditView renders correctly 1`] = `
 <WebView
+  appId="testAppId"
   cacheEnabled={true}
   javaScriptEnabled={true}
+  loginPolicy="testLoginPolicy"
   onError={[Function]}
   onFail={[MockFunction]}
   onNavigationStateChange={[Function]}
@@ -14,6 +16,9 @@ exports[`EditView renders correctly 1`] = `
       "*",
     ]
   }
+  passwordResetPolicy="testPasswordReset"
+  profileEditPolicy="testProfileEditPolicy"
+  redirectURI="test//redirectURI"
   renderLoading={[Function]}
   source={
     Object {
@@ -21,6 +26,7 @@ exports[`EditView renders correctly 1`] = `
     }
   }
   startInLoadingState={true}
+  tenant="TestTenant"
   useSharedProcessPool={true}
 />
 `;

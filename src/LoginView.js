@@ -82,7 +82,9 @@ export default class LoginView extends PureComponent {
     }
 
     if (result.requestType === RequestType.Code) {
-      const reqResult = await adService.fetchAndSetTokenAsync(result.data);
+      const policy = currentUri.indexOf(adService.passwordResetPolicy) > -1 ?
+        adService.passwordResetPolicy : adService.loginPolicy;
+      const reqResult = await adService.fetchAndSetTokenAsync(result.data, policy);
       if (reqResult.isValid) {
         this.props.onSuccess();
       } else {

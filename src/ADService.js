@@ -67,7 +67,7 @@ class ADService {
     if (!this._isTokenValid(this.tokenResult)) {
       const result = await this.fetchAndSetTokenAsync(
         this.tokenResult.refreshToken,
-        false,
+        this.loginPolicy,
         true
       );
 
@@ -84,7 +84,7 @@ class ADService {
 
   getIdToken = () => this.tokenResult.idToken;
 
-  fetchAndSetTokenAsync = async (authCode, isProfileEdit, isRefreshTokenGrant) => {
+  fetchAndSetTokenAsync = async (authCode, policy, isRefreshTokenGrant) => {
     if (!authCode) {
       return Result(false, 'Empty auth code');
     }
@@ -105,10 +105,7 @@ class ADService {
       }
 
       const body = this.getFormUrlEncoded(params);
-      const url = this._getStaticURI(
-        isProfileEdit ? this.profileEditPolicy : this.loginPolicy,
-        'token',
-      );
+      const url = this._getStaticURI(policy, 'token');
       const response = await fetch(url, {
         method: 'POST',
         headers: {

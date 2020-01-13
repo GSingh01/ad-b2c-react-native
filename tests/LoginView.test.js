@@ -358,16 +358,27 @@ describe('LoginView',() => {
                 adService.getLoginFlowResult.mockReturnValue(expectedResult);
             });
 
-            test('calls fetchAndSetTokenAsync correctly', async ()=> {
+            test('calls fetchAndSetTokenAsync correctly when login uri', async ()=> {
                 adService.fetchAndSetTokenAsync = jest.fn();
                 adService.fetchAndSetTokenAsync.mockResolvedValue({isValid:true});
-
+                instance.state.uri = props.loginPolicy;
+                
                 await callbackAsync({url:"doesNotMatter"});
 
                 expect(adService.fetchAndSetTokenAsync).toHaveBeenCalledTimes(1);
-                expect(adService.fetchAndSetTokenAsync).toHaveBeenCalledWith(expectedResult.data);
+                expect(adService.fetchAndSetTokenAsync).toHaveBeenCalledWith(expectedResult.data, props.loginPolicy);
             });
 
+            test('calls fetchAndSetTokenAsync correctly when password reset uri', async ()=> {
+                adService.fetchAndSetTokenAsync = jest.fn();
+                adService.fetchAndSetTokenAsync.mockResolvedValue({isValid:true});
+                instance.state.uri = props.passwordResetPolicy;
+                
+                await callbackAsync({url:"doesNotMatter"});
+
+                expect(adService.fetchAndSetTokenAsync).toHaveBeenCalledTimes(1);
+                expect(adService.fetchAndSetTokenAsync).toHaveBeenCalledWith(expectedResult.data, props.passwordResetPolicy);
+            });
             test('calls props.success correctly when fetchAndSetTokenAsync returns valid', async ()=> {
                 props.onSuccess.mockClear();
                 adService.fetchAndSetTokenAsync = jest.fn();

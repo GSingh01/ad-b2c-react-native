@@ -7,19 +7,18 @@ import adService from '../src/ADService';
 
 describe('EditView',()=>{
     const props = {
-        onSuccess: jest.fn(),
-        onFail: jest.fn(),
-        renderLoading:()=><Text>loading</Text>
-    };
-
-    adService.init({
         appId:"testAppId",
         redirectURI:"test//redirectURI",
         tenant:"TestTenant",
         loginPolicy:"testLoginPolicy",
         passwordResetPolicy:"testPasswordReset",
         profileEditPolicy:"testProfileEditPolicy", 
-    });
+        onSuccess: jest.fn(),
+        onFail: jest.fn(),
+        renderLoading:()=><Text>loading</Text>
+    };
+
+    adService.init(props);
 
     test('renders correctly', () => {
         const wrapper = shallow(<EditView {...props} />);
@@ -182,7 +181,7 @@ describe('EditView',()=>{
                 await callbackAsync({url:"doesNotMatter"});
 
                 expect(adService.fetchAndSetTokenAsync).toHaveBeenCalledTimes(1);
-                expect(adService.fetchAndSetTokenAsync).toHaveBeenCalledWith(expectedResult.data, true);
+                expect(adService.fetchAndSetTokenAsync).toHaveBeenCalledWith(expectedResult.data, props.profileEditPolicy);
             });
 
             test('calls props.success correctly when fetchAndSetTokenAsync returns valid', async ()=> {
