@@ -1,17 +1,17 @@
-import React, { PureComponent } from 'react';
-import { WebView } from 'react-native-webview';
-import adService from './ADService';
-import { RequestType } from './Constants';
+import React, { PureComponent } from "react";
+import { WebView } from "react-native-webview";
+import adService from "./ADService";
+import { RequestType } from "./Constants";
 
 export default class LoginView extends PureComponent {
   constructor(props) {
     super();
     this._setUri = this._setUri.bind(this);
     this.onNavigationStateChangeAsync = this.onNavigationStateChangeAsync.bind(
-      this,
+      this
     );
     this.onShouldStartLoadWithRequest = this.onShouldStartLoadWithRequest.bind(
-      this,
+      this
     );
     this._handleFlowResultAsync = this._handleFlowResultAsync.bind(this);
 
@@ -82,9 +82,14 @@ export default class LoginView extends PureComponent {
     }
 
     if (result.requestType === RequestType.Code) {
-      const policy = currentUri.indexOf(adService.passwordResetPolicy) > -1 ?
-        adService.passwordResetPolicy : adService.loginPolicy;
-      const reqResult = await adService.fetchAndSetTokenAsync(result.data, policy);
+      const policy =
+        currentUri.indexOf(adService.passwordResetPolicy) > -1
+          ? adService.passwordResetPolicy
+          : adService.loginPolicy;
+      const reqResult = await adService.fetchAndSetTokenAsync(
+        result.data,
+        policy
+      );
       if (reqResult.isValid) {
         this.props.onSuccess();
       } else {
@@ -103,14 +108,16 @@ export default class LoginView extends PureComponent {
 
     return (
       <WebView
+        userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:61.0) Gecko/20100101 Firefox/61.0"
+        incognito
         {...rest}
-        originWhitelist={['*']} // refer: https://github.com/facebook/react-native/issues/20917
+        originWhitelist={["*"]} // refer: https://github.com/facebook/react-native/issues/20917
         source={{ uri }}
         onNavigationStateChange={this.onNavigationStateChangeAsync}
         onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
         renderLoading={renderLoading}
         startInLoadingState
-        ref={c => {
+        ref={(c) => {
           this.webView = c;
         }}
       />

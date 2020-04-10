@@ -4,6 +4,7 @@ exports[`LoginView renders correctly when loaded 1`] = `
 <WebView
   appId="testAppId"
   cacheEnabled={true}
+  incognito={true}
   javaScriptEnabled={true}
   loginPolicy="testLoginPolicy"
   onFail={[MockFunction]}
@@ -28,6 +29,7 @@ exports[`LoginView renders correctly when loaded 1`] = `
   startInLoadingState={true}
   tenant="TestTenant"
   useSharedProcessPool={true}
+  userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:61.0) Gecko/20100101 Firefox/61.0"
 />
 `;
 

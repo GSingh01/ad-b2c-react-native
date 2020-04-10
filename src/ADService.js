@@ -198,7 +198,7 @@ class ADService {
     url,
     { error_description, code, post_logout_redirect_uri },
   ) => {
-    if (code) {
+    if (code && url.indexOf(this.redirectURI) > -1) {
       return RequestType.Code;
     }
 
