@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import { WebView } from "react-native-webview";
 import adService from "./ADService";
 import { RequestType } from "./Constants";
+import { BackHandler } from "react-native";
 
 export default class LoginView extends PureComponent {
   constructor(props) {
@@ -14,6 +15,8 @@ export default class LoginView extends PureComponent {
       this
     );
     this._handleFlowResultAsync = this._handleFlowResultAsync.bind(this);
+    this._backHandler = this._backHandler.bind(this);
+    this.onWebViewError = this.onWebViewError.bind(this);
 
     this.webView = null;
     adService.init(props);
@@ -22,8 +25,13 @@ export default class LoginView extends PureComponent {
       loaded: false,
     };
   }
+  _backHandler() {
+    this.webView.goBack();
+    return true;
+  }
 
   async componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", this._backHandler);
     const isAuthentic = await adService.isAuthenticAsync();
     if (isAuthentic) {
       this.props.onSuccess();
@@ -32,9 +40,19 @@ export default class LoginView extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", this._backHandler);
+  }
+
   async onNavigationStateChangeAsync(navState) {
-    const { url } = navState;
+    const { url, loading } = navState;
     const { uri: stateUri } = this.state;
+
+    //credits: Thanks to @stevef51 for the suggestion
+    if (loading) {
+      return false;
+    }
+
     const result = adService.getLoginFlowResult(url);
 
     if (url.toLowerCase() !== stateUri.toLowerCase()) {
@@ -98,9 +116,12 @@ export default class LoginView extends PureComponent {
     }
   }
 
+  onWebViewError({ nativeEvent: e }) {
+    this.props.onFail(`Error accessing ${e.url}, ${e.description}`);
+  }
   render() {
     const { uri, loaded } = this.state;
-    const { renderLoading, ...rest } = this.props;
+    const { renderLoading, onFail, ...rest } = this.props;
 
     if (!loaded) {
       return renderLoading();
@@ -117,6 +138,7 @@ export default class LoginView extends PureComponent {
         onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
         renderLoading={renderLoading}
         startInLoadingState
+        onError={this.onWebViewError}
         ref={(c) => {
           this.webView = c;
         }}

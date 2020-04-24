@@ -1,26 +1,29 @@
 /* eslint-disable camelcase */
-import { RequestType } from './Constants';
-import Result from './Result';
+import { RequestType } from "./Constants";
+import Result from "./Result";
 
 class ADService {
-  init = props => {
+  init = (props) => {
     this.tenant = props.tenant;
     this.appId = props.appId;
     this.loginPolicy = props.loginPolicy;
     this.passwordResetPolicy = props.passwordResetPolicy;
     this.profileEditPolicy = props.profileEditPolicy;
     this.redirectURI = encodeURI(props.redirectURI);
-    this.scope = encodeURI(`${this.appId} offline_access`);
-    this.response_mode = 'query';
+    this.scope = encodeURI(
+      props.scope ? props.scope : `${this.appId} offline_access`
+    );
+
+    this.response_mode = "query";
     this.tokenResult = {};
     this.secureStore = props.secureStore;
     this.baseUri = `https://${this.tenant}.b2clogin.com/${this.tenant}.onmicrosoft.com`;
 
-    this.TokenTypeKey = 'tokenType';
-    this.AccessTokenKey = 'accessToken';
-    this.IdTokenKey = 'idToken';
-    this.RefreshTokenKey = 'refreshToken';
-    this.ExpiresOnKey = 'expiresOn';
+    this.TokenTypeKey = "tokenType";
+    this.AccessTokenKey = "accessToken";
+    this.IdTokenKey = "idToken";
+    this.RefreshTokenKey = "refreshToken";
+    this.ExpiresOnKey = "expiresOn";
   };
 
   logoutAsync = async () => {
@@ -60,7 +63,7 @@ class ADService {
     return this._isTokenValid(this.tokenResult);
   };
 
-  _isTokenValid = tokenResult =>
+  _isTokenValid = (tokenResult) =>
     tokenResult && new Date().getTime() < tokenResult.expiresOn * 1000;
 
   getAccessTokenAsync = async () => {
@@ -78,7 +81,7 @@ class ADService {
 
     return Result(
       true,
-      `${this.tokenResult.tokenType} ${this.tokenResult.accessToken}`,
+      `${this.tokenResult.tokenType} ${this.tokenResult.accessToken}`
     );
   };
 
@@ -86,30 +89,32 @@ class ADService {
 
   fetchAndSetTokenAsync = async (authCode, policy, isRefreshTokenGrant) => {
     if (!authCode) {
-      return Result(false, 'Empty auth code');
+      return Result(
+        false,
+        `Empty ${
+          isRefreshTokenGrant
+            ? "refresh token or user not logged in"
+            : "auth code"
+        }`
+      );
     }
 
     try {
-      let params = {
-        client_id: this.appId,
-        scope: `${this.appId} offline_access`,        
-        redirect_uri: this.redirectURI,
-      };
+      let body = `client_id=${this.appId}&scope=${this.scope}&redirect_uri=${this.redirectURI}`;
 
-      if(isRefreshTokenGrant){
-        params.grant_type = 'refresh_token';
-        params.refresh_token = authCode;
-      }else{
-        params.grant_type = 'authorization_code';
-        params.code= authCode;
+      if (isRefreshTokenGrant) {
+        body += "&grant_type=refresh_token";
+        body += `&refresh_token=${authCode}`;
+      } else {
+        body += "&grant_type=authorization_code";
+        body += `&code=${authCode}`;
       }
 
-      const body = this.getFormUrlEncoded(params);
-      const url = this._getStaticURI(policy, 'token');
+      const url = this._getStaticURI(policy, "token");
       const response = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body,
       });
@@ -126,7 +131,7 @@ class ADService {
     }
   };
 
-  _setTokenDataAsync = async response => {
+  _setTokenDataAsync = async (response) => {
     const res = await response.json();
     this.tokenResult = {
       tokenType: res.token_type,
@@ -143,45 +148,38 @@ class ADService {
       this.secureStore.setItemAsync(this.IdTokenKey, res.id_token),
       this.secureStore.setItemAsync(
         this.ExpiresOnKey,
-        res.expires_on.toString(),
-      ),
+        res.expires_on.toString()
+      )
     );
   };
 
-  getFormUrlEncoded = params =>
-    Object.keys(params)
-      .map(
-        key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`,
-      )
-      .join('&');
-
   _getStaticURI = (policy, endPoint) => {
     let uri = `${this.baseUri}/${policy}/oauth2/v2.0/${endPoint}?`;
-    if (endPoint === 'authorize') {
+    if (endPoint === "authorize") {
       uri += `client_id=${this.appId}&response_type=code`;
       uri += `&redirect_uri=${this.redirectURI}`;
-      uri += '&response_mode=query';
+      uri += "&response_mode=query";
       uri += `&scope=${this.scope}`;
     }
     return uri;
   };
 
-  getLoginURI = () => this._getStaticURI(this.loginPolicy, 'authorize');
+  getLoginURI = () => this._getStaticURI(this.loginPolicy, "authorize");
 
   getLogoutURI = () =>
     `${this.baseUri}/${this.loginPolicy}/oauth2/v2.0/logout?post_logout_redirect_uri=${this.redirectURI}`;
 
   getPasswordResetURI = () =>
-    `${this._getStaticURI(this.passwordResetPolicy, 'authorize')}`;
+    `${this._getStaticURI(this.passwordResetPolicy, "authorize")}`;
 
   getProfileEditURI = () =>
-    `${this._getStaticURI(this.profileEditPolicy, 'authorize')}`;
+    `${this._getStaticURI(this.profileEditPolicy, "authorize")}`;
 
-  getLoginFlowResult = url => {
+  getLoginFlowResult = (url) => {
     const params = this._getQueryParams(url);
     const { error_description, code } = params;
 
-    let data = '';
+    let data = "";
     if (code) {
       data = code;
     } else {
@@ -196,7 +194,7 @@ class ADService {
 
   _getRequestType = (
     url,
-    { error_description, code, post_logout_redirect_uri },
+    { error_description, code, post_logout_redirect_uri }
   ) => {
     if (code && url.indexOf(this.redirectURI) > -1) {
       return RequestType.Code;
@@ -206,11 +204,11 @@ class ADService {
       return RequestType.Logout;
     }
     if (error_description) {
-      if (error_description.indexOf('AADB2C90118') !== -1) {
+      if (error_description.indexOf("AADB2C90118") !== -1) {
         return RequestType.PasswordReset;
       }
 
-      if (error_description.indexOf('AADB2C90091') !== -1) {
+      if (error_description.indexOf("AADB2C90091") !== -1) {
         return RequestType.Cancelled;
       }
     }
@@ -223,7 +221,7 @@ class ADService {
     return RequestType.Other;
   };
 
-  _getQueryParams = url => {
+  _getQueryParams = (url) => {
     const regex = /[?&]([^=#]+)=([^&#]*)/g;
     const params = {};
     let match;

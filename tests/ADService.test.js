@@ -48,7 +48,7 @@ describe("ADService", () => {
       const result = await adService.getAccessTokenAsync();
 
       expect(result.isValid).toBe(false);
-      expect(result.data).toBe("Empty auth code");
+      expect(result.data).toBe("Empty refresh token or user not logged in");
     });
   });
 
@@ -209,7 +209,7 @@ describe("ADService", () => {
         "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testloginPolicy/oauth2/v2.0/token?";
       const expectedArg2 = {
         body:
-          "client_id=testId&scope=testId%20offline_access&redirect_uri=test%2520redirectURI&grant_type=refresh_token&refresh_token=testRefreshToken",
+          "client_id=testId&scope=testId%20offline_access&redirect_uri=test%20redirectURI&grant_type=refresh_token&refresh_token=testRefreshToken",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         method: "POST",
       };
@@ -222,7 +222,7 @@ describe("ADService", () => {
       const result = await adService.getAccessTokenAsync();
 
       expect(result.isValid).toBe(false);
-      expect(result.data).toBe("Empty auth code");
+      expect(result.data).toBe("Empty refresh token or user not logged in");
     });
   });
 
@@ -246,6 +246,27 @@ describe("ADService", () => {
       await testInvalidAuthCode(null);
     });
 
+    test("calls fetch with custom scope correctly", async () => {
+      const policy = "testProfileEditPolicy";
+      const propsWithExtraProps = {
+        ...props,
+        scope: "myScope1 myScope2",
+      };
+      adService.init(propsWithExtraProps);
+      await adService.fetchAndSetTokenAsync("testCode", policy);
+
+      const expectedUrl = `https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/${policy}/oauth2/v2.0/token?`;
+      const expectedArg2 = {
+        body:
+          "client_id=testId&scope=myScope1%20myScope2&redirect_uri=test%20redirectURI&grant_type=authorization_code&code=testCode",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        method: "POST",
+      };
+
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(fetch).toHaveBeenCalledWith(expectedUrl, expectedArg2);
+    });
+
     test("calls fetch with correct parms when isProfileEdit set", async () => {
       const policy = "testProfileEditPolicy";
       await adService.fetchAndSetTokenAsync("testCode", policy);
@@ -253,7 +274,7 @@ describe("ADService", () => {
       const expectedUrl = `https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/${policy}/oauth2/v2.0/token?`;
       const expectedArg2 = {
         body:
-          "client_id=testId&scope=testId%20offline_access&redirect_uri=test%2520redirectURI&grant_type=authorization_code&code=testCode",
+          "client_id=testId&scope=testId%20offline_access&redirect_uri=test%20redirectURI&grant_type=authorization_code&code=testCode",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         method: "POST",
       };
@@ -330,6 +351,17 @@ describe("ADService", () => {
     test("returns correct value", () => {
       const expectedUri =
         "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testloginPolicy/oauth2/v2.0/authorize?client_id=testId&response_type=code&redirect_uri=test%20redirectURI&response_mode=query&scope=testId%20offline_access";
+
+      expect(adService.getLoginURI()).toBe(expectedUri);
+    });
+    test("returns correct value with custom scope", () => {
+      const propsWithExtraProps = {
+        ...props,
+        scope: "myScope1 myScope2",
+      };
+      adService.init(propsWithExtraProps);
+      const expectedUri =
+        "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testloginPolicy/oauth2/v2.0/authorize?client_id=testId&response_type=code&redirect_uri=test%20redirectURI&response_mode=query&scope=myScope1%20myScope2";
 
       expect(adService.getLoginURI()).toBe(expectedUri);
     });
