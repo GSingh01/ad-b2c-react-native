@@ -56,11 +56,11 @@ export default class Login extends React.PureComponent {
   render() {
       //apart from these props you can use any webview props
 
-      //for **secureStore**, you can pass expo's secure store or create your own wrapper,
+      //for *secureStore*, you can pass expo's secure store or create your own wrapper,
       //which implements deleteItemAsync(key), getItemAsync(key), setItemAsync(key, data)
 
-      //**scope is optional**,if provided will overwrite the default scope {appId offline_access}
-      //**Suggestion**: with custom scope, id and refresh tokens will not be returned,
+      //*scope is optional*,if provided will overwrite the default scope {appId offline_access}
+      //*Suggestion*: with custom scope, id and refresh tokens will not be returned,
       //so consider using format 'openid offline_access {your scope} '
 
     return (
