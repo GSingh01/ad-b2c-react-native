@@ -141,7 +141,7 @@ class ADService {
       expiresOn: res.expires_on,
     };
 
-    await Promise.all(
+    await Promise.all([
       this.secureStore.setItemAsync(this.TokenTypeKey, res.token_type),
       this.secureStore.setItemAsync(this.AccessTokenKey, res.access_token),
       this.secureStore.setItemAsync(this.RefreshTokenKey, res.refresh_token),
@@ -149,8 +149,8 @@ class ADService {
       this.secureStore.setItemAsync(
         this.ExpiresOnKey,
         res.expires_on.toString()
-      )
-    );
+      ),
+    ]);
   };
 
   _getStaticURI = (policy, endPoint) => {
