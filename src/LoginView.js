@@ -23,8 +23,13 @@ export default class LoginView extends PureComponent {
     this.state = {
       uri: adService.getLoginURI(),
       loaded: false,
+      canGoBack: false;
     };
   }
+  _canGoBack() {
+    return this.state.canGoBack;
+  }
+
   _backHandler() {
     this.webView.goBack();
     return true;
@@ -47,7 +52,7 @@ export default class LoginView extends PureComponent {
   async onNavigationStateChangeAsync(navState) {
     const { url, loading } = navState;
     const { uri: stateUri } = this.state;
-
+    this.setState({canGoBack: navState.canGoBack});
     //credits: Thanks to @stevef51 for the suggestion
     if (loading) {
       return false;
