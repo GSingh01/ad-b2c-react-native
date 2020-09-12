@@ -64,7 +64,7 @@ export default class LoginView extends PureComponent {
     const result = adService.getLoginFlowResult(navState.url);
     if (
       result.requestType === RequestType.Ignore ||
-      result.requestType === RequestType.Code ||
+      result.requestType === RequestType.Code && !navState.loading ||
       result.requestType === RequestType.PasswordReset ||
       result.requestType === RequestType.Cancelled
     ) {
@@ -129,7 +129,7 @@ export default class LoginView extends PureComponent {
 
     return (
       <WebView
-        userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:61.0) Gecko/20100101 Firefox/61.0"
+        userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15"
         incognito
         {...rest}
         originWhitelist={["*"]} // refer: https://github.com/facebook/react-native/issues/20917
