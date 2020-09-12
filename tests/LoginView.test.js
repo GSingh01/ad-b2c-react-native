@@ -199,6 +199,11 @@ describe("LoginView", () => {
         var result = instance.onShouldStartLoadWithRequest({ url: "" });
         expect(result).toBe(false);
       });
+      
+      test("returns true", () => {
+        var result = instance.onShouldStartLoadWithRequest({ url: "", loading: true });
+        expect(result).toBe(true);
+      });
     });
 
     describe("RequestType.PasswordReset", () => {
