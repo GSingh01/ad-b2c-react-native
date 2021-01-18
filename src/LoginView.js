@@ -70,7 +70,9 @@ export default class LoginView extends PureComponent {
       result.requestType === RequestType.Cancelled
     ) {
       this.webView.stopLoading();
-      this._handleFlowResultAsync(result, uri);
+      if (Platform.OS === 'ios') {
+        this._handleFlowResultAsync(result, uri);
+      }
       return false;
     }
 
