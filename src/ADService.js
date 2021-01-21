@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import { RequestType } from "./Constants";
-import Result from "./Result";
+import {RequestType} from './Constants';
+import Result from './Result';
 
 class ADService {
   init = (props) => {
@@ -11,52 +11,46 @@ class ADService {
     this.profileEditPolicy = props.profileEditPolicy;
     this.redirectURI = encodeURI(props.redirectURI);
     this.scope = encodeURI(
-      props.scope ? props.scope : `${this.appId} offline_access`
+      props.scope ? props.scope : `${this.appId} offline_access`,
     );
 
-    this.response_mode = "query";
+    this.response_mode = 'query';
     this.tokenResult = {};
-    this.secureStore = props.secureStore;
+
+    this.setTokenState = props.setTokenState;
+    this.resetTokenState = props.resetTokenState;
+    this.tokenState = props.tokenState;
+
     this.baseUri = `https://${this.tenant}.b2clogin.com/${this.tenant}.onmicrosoft.com`;
 
-    this.TokenTypeKey = "tokenType";
-    this.AccessTokenKey = "accessToken";
-    this.IdTokenKey = "idToken";
-    this.RefreshTokenKey = "refreshToken";
-    this.ExpiresOnKey = "expiresOn";
+    this.TokenTypeKey = 'tokenType';
+    this.AccessTokenKey = 'accessToken';
+    this.IdTokenKey = 'idToken';
+    this.RefreshTokenKey = 'refreshToken';
+    this.ExpiresOnKey = 'expiresOn';
   };
 
   logoutAsync = async () => {
     this.tokenResult = {};
-    await Promise.all([
-      this.secureStore.deleteItemAsync(this.TokenTypeKey),
-      this.secureStore.deleteItemAsync(this.AccessTokenKey),
-      this.secureStore.deleteItemAsync(this.IdTokenKey),
-      this.secureStore.deleteItemAsync(this.RefreshTokenKey),
-      this.secureStore.deleteItemAsync(this.ExpiresOnKey),
-    ]);
+    this.resetTokenState();
+
+    //await Promise.all([
+    //  this.secureStore.deleteItemAsync(this.TokenTypeKey),
+    //  this.secureStore.deleteItemAsync(this.AccessTokenKey),
+    //  this.secureStore.deleteItemAsync(this.IdTokenKey),
+    //  this.secureStore.deleteItemAsync(this.RefreshTokenKey),
+    //  this.secureStore.deleteItemAsync(this.ExpiresOnKey),
+    //]);
   };
 
   isAuthenticAsync = async () => {
-    const [
-      tokenType,
-      accessToken,
-      refreshToken,
-      idToken,
-      expiresOn,
-    ] = await Promise.all([
-      this.secureStore.getItemAsync(this.TokenTypeKey),
-      this.secureStore.getItemAsync(this.AccessTokenKey),
-      this.secureStore.getItemAsync(this.RefreshTokenKey),
-      this.secureStore.getItemAsync(this.IdTokenKey),
-      this.secureStore.getItemAsync(this.ExpiresOnKey),
-    ]);
+    const {tokenType, access, refresh, expiresOn} = this.tokenState;
 
     this.tokenResult = {
-      tokenType,
-      accessToken,
-      idToken,
-      refreshToken,
+      tokenType: tokenType,
+      accessToken: access,
+      idToken: '',
+      refreshToken: refresh,
       expiresOn: parseInt(expiresOn),
     };
 
@@ -71,7 +65,7 @@ class ADService {
       const result = await this.fetchAndSetTokenAsync(
         this.tokenResult.refreshToken,
         this.loginPolicy,
-        true
+        true,
       );
 
       if (!result.isValid) {
@@ -81,7 +75,7 @@ class ADService {
 
     return Result(
       true,
-      `${this.tokenResult.tokenType} ${this.tokenResult.accessToken}`
+      `${this.tokenResult.tokenType} ${this.tokenResult.accessToken}`,
     );
   };
 
@@ -93,9 +87,9 @@ class ADService {
         false,
         `Empty ${
           isRefreshTokenGrant
-            ? "refresh token or user not logged in"
-            : "auth code"
-        }`
+            ? 'refresh token or user not logged in'
+            : 'auth code'
+        }`,
       );
     }
 
@@ -103,18 +97,18 @@ class ADService {
       let body = `client_id=${this.appId}&scope=${this.scope}&redirect_uri=${this.redirectURI}`;
 
       if (isRefreshTokenGrant) {
-        body += "&grant_type=refresh_token";
+        body += '&grant_type=refresh_token';
         body += `&refresh_token=${authCode}`;
       } else {
-        body += "&grant_type=authorization_code";
+        body += '&grant_type=authorization_code';
         body += `&code=${authCode}`;
       }
 
-      const url = this._getStaticURI(policy, "token");
+      const url = this._getStaticURI(policy, 'token');
       const response = await fetch(url, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body,
       });
@@ -141,45 +135,52 @@ class ADService {
       expiresOn: res.expires_on,
     };
 
-    await Promise.all([
-      this.secureStore.setItemAsync(this.TokenTypeKey, res.token_type),
-      this.secureStore.setItemAsync(this.AccessTokenKey, res.access_token),
-      this.secureStore.setItemAsync(this.RefreshTokenKey, res.refresh_token),
-      this.secureStore.setItemAsync(this.IdTokenKey, res.id_token),
-      this.secureStore.setItemAsync(
-        this.ExpiresOnKey,
-        res.expires_on.toString()
-      ),
-    ]);
+    this.setTokenState({
+      tokenType: res.token_type,
+      access: res.access_token,
+      refresh: res.refresh_token,
+      expiresOn: res.expires_on.toString(),
+    });
+
+    //await Promise.all([
+    //  this.secureStore.setItemAsync(this.TokenTypeKey, res.token_type),
+    //  this.secureStore.setItemAsync(this.AccessTokenKey, res.access_token),
+    //  this.secureStore.setItemAsync(this.RefreshTokenKey, res.refresh_token),
+    //  this.secureStore.setItemAsync(this.IdTokenKey, res.id_token),
+    //  this.secureStore.setItemAsync(
+    //    this.ExpiresOnKey,
+    //    res.expires_on.toString(),
+    //  ),
+    //]);
   };
 
   _getStaticURI = (policy, endPoint) => {
     let uri = `${this.baseUri}/${policy}/oauth2/v2.0/${endPoint}?`;
-    if (endPoint === "authorize") {
+    if (endPoint === 'authorize') {
       uri += `client_id=${this.appId}&response_type=code`;
       uri += `&redirect_uri=${this.redirectURI}`;
-      uri += "&response_mode=query";
+      uri += '&response_mode=query';
       uri += `&scope=${this.scope}`;
     }
     return uri;
   };
 
-  getLoginURI = () => this._getStaticURI(this.loginPolicy, "authorize");
+  getLoginURI = () => this._getStaticURI(this.loginPolicy, 'authorize');
 
   getLogoutURI = () =>
     `${this.baseUri}/${this.loginPolicy}/oauth2/v2.0/logout?post_logout_redirect_uri=${this.redirectURI}`;
 
   getPasswordResetURI = () =>
-    `${this._getStaticURI(this.passwordResetPolicy, "authorize")}`;
+    `${this._getStaticURI(this.passwordResetPolicy, 'authorize')}`;
 
   getProfileEditURI = () =>
-    `${this._getStaticURI(this.profileEditPolicy, "authorize")}`;
+    `${this._getStaticURI(this.profileEditPolicy, 'authorize')}`;
 
   getLoginFlowResult = (url) => {
     const params = this._getQueryParams(url);
-    const { error_description, code } = params;
+    const {error_description, code} = params;
 
-    let data = "";
+    let data = '';
     if (code) {
       data = code;
     } else {
@@ -194,7 +195,7 @@ class ADService {
 
   _getRequestType = (
     url,
-    { error_description, code, post_logout_redirect_uri }
+    {error_description, code, post_logout_redirect_uri},
   ) => {
     if (code && url.indexOf(this.redirectURI) > -1) {
       return RequestType.Code;
@@ -204,11 +205,11 @@ class ADService {
       return RequestType.Logout;
     }
     if (error_description) {
-      if (error_description.indexOf("AADB2C90118") !== -1) {
+      if (error_description.indexOf('AADB2C90118') !== -1) {
         return RequestType.PasswordReset;
       }
 
-      if (error_description.indexOf("AADB2C90091") !== -1) {
+      if (error_description.indexOf('AADB2C90091') !== -1) {
         return RequestType.Cancelled;
       }
     }
@@ -234,4 +235,4 @@ class ADService {
 
 const adService = new ADService();
 export default adService;
-export { ADService };
+export {ADService};
