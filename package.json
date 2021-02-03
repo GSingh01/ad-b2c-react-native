@@ -5,7 +5,7 @@
   "main": "index.js",
   "files": ["index.js", "src"],
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "upgrade-interactive": "npm-check --update"
   },
   "jest": {
