@@ -2,6 +2,7 @@
 
 exports[`LoginView renders correctly when loaded 1`] = `
 <WebView
+  androidLayerType="hardware"
   appId="testAppId"
   cacheEnabled={true}
   incognito={true}
