@@ -26,7 +26,6 @@ export default class LoginView extends PureComponent {
     };
   }
   _backHandler() {
-    this.webView.goBack();
     return true;
   }
 
