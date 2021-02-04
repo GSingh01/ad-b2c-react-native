@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
-import {RequestType} from './Constants';
-import Result from './Result';
+import { RequestType } from "./Constants";
+import Result from "./Result";
 
 class ADService {
-  init = (props) => {
+  init = props => {
     this.tenant = props.tenant;
     this.appId = props.appId;
     this.loginPolicy = props.loginPolicy;
@@ -11,10 +11,10 @@ class ADService {
     this.profileEditPolicy = props.profileEditPolicy;
     this.redirectURI = encodeURI(props.redirectURI);
     this.scope = encodeURI(
-      props.scope ? props.scope : `${this.appId} offline_access`,
+      props.scope ? props.scope : `${this.appId} offline_access`
     );
 
-    this.response_mode = 'query';
+    this.response_mode = "query";
     this.tokenResult = {};
 
     this.setTokenState = props.setTokenState;
@@ -23,49 +23,43 @@ class ADService {
 
     this.baseUri = `https://${this.tenant}.b2clogin.com/${this.tenant}.onmicrosoft.com`;
 
-    this.TokenTypeKey = 'tokenType';
-    this.AccessTokenKey = 'accessToken';
-    this.IdTokenKey = 'idToken';
-    this.RefreshTokenKey = 'refreshToken';
-    this.ExpiresOnKey = 'expiresOn';
+    this.TokenTypeKey = "tokenType";
+    this.AccessTokenKey = "accessToken";
+    this.IdTokenKey = "idToken";
+    this.RefreshTokenKey = "refreshToken";
+    this.ExpiresOnKey = "expiresOn";
   };
 
   logoutAsync = async () => {
     this.tokenResult = {};
     this.resetTokenState();
-
-    //await Promise.all([
-    //  this.secureStore.deleteItemAsync(this.TokenTypeKey),
-    //  this.secureStore.deleteItemAsync(this.AccessTokenKey),
-    //  this.secureStore.deleteItemAsync(this.IdTokenKey),
-    //  this.secureStore.deleteItemAsync(this.RefreshTokenKey),
-    //  this.secureStore.deleteItemAsync(this.ExpiresOnKey),
-    //]);
   };
 
   isAuthenticAsync = async () => {
-    const {tokenType, access, refresh, expiresOn} = this.tokenState;
+    const { tokenType, access, refresh, expiresOn } = this.tokenState;
 
     this.tokenResult = {
       tokenType: tokenType,
       accessToken: access,
-      idToken: '',
+      idToken: "",
       refreshToken: refresh,
-      expiresOn: parseInt(expiresOn),
+      expiresOn: parseInt(expiresOn)
     };
 
     return this._isTokenValid(this.tokenResult);
   };
 
-  _isTokenValid = (tokenResult) =>
-    tokenResult && new Date().getTime() < tokenResult.expiresOn * 1000;
+  _isTokenValid = tokenResult =>
+    tokenResult &&
+    "expiresOn" in tokenResult &&
+    new Date().getTime() < tokenResult.expiresOn * 1000;
 
   getAccessTokenAsync = async () => {
     if (!this._isTokenValid(this.tokenResult)) {
       const result = await this.fetchAndSetTokenAsync(
         this.tokenResult.refreshToken,
         this.loginPolicy,
-        true,
+        true
       );
 
       if (!result.isValid) {
@@ -75,11 +69,12 @@ class ADService {
 
     return Result(
       true,
-      `${this.tokenResult.tokenType} ${this.tokenResult.accessToken}`,
+      `${this.tokenResult.tokenType} ${this.tokenResult.accessToken}`
     );
   };
 
-  getIdToken = () => this.tokenResult.idToken;
+  getIdToken = () =>
+    this.tokenResult?.idToken === undefined ? "" : this.tokenResult.idToken;
 
   fetchAndSetTokenAsync = async (authCode, policy, isRefreshTokenGrant) => {
     if (!authCode) {
@@ -87,9 +82,9 @@ class ADService {
         false,
         `Empty ${
           isRefreshTokenGrant
-            ? 'refresh token or user not logged in'
-            : 'auth code'
-        }`,
+            ? "refresh token or user not logged in"
+            : "auth code"
+        }`
       );
     }
 
@@ -97,20 +92,20 @@ class ADService {
       let body = `client_id=${this.appId}&scope=${this.scope}&redirect_uri=${this.redirectURI}`;
 
       if (isRefreshTokenGrant) {
-        body += '&grant_type=refresh_token';
+        body += "&grant_type=refresh_token";
         body += `&refresh_token=${authCode}`;
       } else {
-        body += '&grant_type=authorization_code';
+        body += "&grant_type=authorization_code";
         body += `&code=${authCode}`;
       }
 
-      const url = this._getStaticURI(policy, 'token');
+      const url = this._getStaticURI(policy, "token");
       const response = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          "Content-Type": "application/x-www-form-urlencoded"
         },
-        body,
+        body
       });
 
       if (!response.ok) {
@@ -125,62 +120,51 @@ class ADService {
     }
   };
 
-  _setTokenDataAsync = async (response) => {
+  _setTokenDataAsync = async response => {
     const res = await response.json();
     this.tokenResult = {
       tokenType: res.token_type,
       accessToken: res.access_token,
       idToken: res.id_token,
       refreshToken: res.refresh_token,
-      expiresOn: res.expires_on,
+      expiresOn: res.expires_on
     };
 
     this.setTokenState({
       tokenType: res.token_type,
       access: res.access_token,
       refresh: res.refresh_token,
-      expiresOn: res.expires_on.toString(),
+      expiresOn: res.expires_on.toString()
     });
-
-    //await Promise.all([
-    //  this.secureStore.setItemAsync(this.TokenTypeKey, res.token_type),
-    //  this.secureStore.setItemAsync(this.AccessTokenKey, res.access_token),
-    //  this.secureStore.setItemAsync(this.RefreshTokenKey, res.refresh_token),
-    //  this.secureStore.setItemAsync(this.IdTokenKey, res.id_token),
-    //  this.secureStore.setItemAsync(
-    //    this.ExpiresOnKey,
-    //    res.expires_on.toString(),
-    //  ),
-    //]);
   };
 
   _getStaticURI = (policy, endPoint) => {
     let uri = `${this.baseUri}/${policy}/oauth2/v2.0/${endPoint}?`;
-    if (endPoint === 'authorize') {
+    if (endPoint === "authorize") {
       uri += `client_id=${this.appId}&response_type=code`;
       uri += `&redirect_uri=${this.redirectURI}`;
-      uri += '&response_mode=query';
+      uri += "&response_mode=query";
       uri += `&scope=${this.scope}`;
     }
     return uri;
   };
 
-  getLoginURI = () => this._getStaticURI(this.loginPolicy, 'authorize');
+  getLoginURI = () => this._getStaticURI(this.loginPolicy, "authorize");
 
   getLogoutURI = () =>
     `${this.baseUri}/${this.loginPolicy}/oauth2/v2.0/logout?post_logout_redirect_uri=${this.redirectURI}`;
 
   getPasswordResetURI = () =>
-    `${this._getStaticURI(this.passwordResetPolicy, 'authorize')}`;
+    `${this._getStaticURI(this.passwordResetPolicy, "authorize")}`;
 
   getProfileEditURI = () =>
-    `${this._getStaticURI(this.profileEditPolicy, 'authorize')}`;
+    `${this._getStaticURI(this.profileEditPolicy, "authorize")}`;
 
-  getLoginFlowResult = (url) => {
+  getLoginFlowResult = url => {
     const params = this._getQueryParams(url);
-    const {error_description, code} = params;
+    const { error_description, code } = params;
 
-    let data = '';
+    let data = "";
     if (code) {
       data = code;
     } else {
@@ -189,13 +173,13 @@ class ADService {
 
     return {
       requestType: this._getRequestType(url, params),
-      data,
+      data
     };
   };
 
   _getRequestType = (
     url,
-    {error_description, code, post_logout_redirect_uri},
+    { error_description, code, post_logout_redirect_uri }
   ) => {
     if (code && url.indexOf(this.redirectURI) > -1) {
       return RequestType.Code;
@@ -205,11 +189,11 @@ class ADService {
       return RequestType.Logout;
     }
     if (error_description) {
-      if (error_description.indexOf('AADB2C90118') !== -1) {
+      if (error_description.indexOf("AADB2C90118") !== -1) {
         return RequestType.PasswordReset;
       }
 
-      if (error_description.indexOf('AADB2C90091') !== -1) {
+      if (error_description.indexOf("AADB2C90091") !== -1) {
         return RequestType.Cancelled;
       }
     }
@@ -222,7 +206,7 @@ class ADService {
     return RequestType.Other;
   };
 
-  _getQueryParams = (url) => {
+  _getQueryParams = url => {
     const regex = /[?&]([^=#]+)=([^&#]*)/g;
     const params = {};
     let match;
@@ -235,4 +219,4 @@ class ADService {
 
 const adService = new ADService();
 export default adService;
-export {ADService};
+export { ADService };
