@@ -107,7 +107,6 @@ describe.only("ADService", () => {
       expect(await adService.isAuthenticAsync()).toEqual(true);
 
       const result = await adService.getAccessTokenAsync();
-
       expect(result.isValid).toBe(true);
       expect(result.data).toBe("tokenType accessToken");
     });
@@ -127,24 +126,52 @@ describe.only("ADService", () => {
       // Store token state and verify token is invalid
       expect(await adService.isAuthenticAsync()).toEqual(false);
 
-      const tokens = await adService.getAccessTokenAsync();
-
-      const expectedUrl =
-        "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testloginPolicy/oauth2/v2.0/token?";
-      const expectedArg2 = {
-        body:
-          "client_id=testId&scope=testId%20offline_access&redirect_uri=test%20redirectURI&grant_type=refresh_token&refresh_token=testRefreshToken",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        method: "POST"
-      };
-
+      await adService.getAccessTokenAsync();
       expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith(expectedUrl, expectedArg2);
+      expect(fetch).toHaveBeenCalledWith(
+        "https://testtenant.b2clogin.com/testtenant.onmicrosoft.com/testloginPolicy/oauth2/v2.0/token?",
+        {
+          body:
+            "client_id=testId&scope=testId%20offline_access&redirect_uri=test%20redirectURI&grant_type=refresh_token&refresh_token=testRefreshToken",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          method: "POST"
+        }
+      );
+    });
+
+    test("Call fetch and handle invalid result", async () => {
+      const error = "Not ok test";
+      const jsonMock = jest.fn();
+      const response = { ok: false, json: jsonMock };
+      jsonMock.mockResolvedValue({
+        error: "test error",
+        error_description: error
+      });
+      fetch.mockResolvedValue(response, { status: 400 });
+
+      adService.init({
+        ...props,
+        tokenState: {
+          tokenType: "tokenType",
+          access: "accessToken",
+          idToken: "idToken",
+          refresh: "testRefreshToken",
+          expiresOn: new Date().getTime() / 1000 - 10000
+        }
+      });
+
+      // Store token state and verify token is invalid
+      expect(await adService.isAuthenticAsync()).toEqual(false);
+
+      expect(await adService.getAccessTokenAsync()).toEqual({
+        isValid: false,
+        data: error
+      });
+      expect(fetch).toHaveBeenCalledTimes(1);
     });
 
     test("returns invalid result when auth code is empty", async () => {
       const result = await adService.getAccessTokenAsync();
-
       expect(result.isValid).toBe(false);
       expect(result.data).toBe("Empty refresh token or user not logged in");
     });
