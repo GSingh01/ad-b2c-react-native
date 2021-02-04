@@ -26,7 +26,12 @@ export default class LoginView extends PureComponent {
     };
   }
   _backHandler() {
+    const { uri } = this.state;
+    if (uri == adService.getPasswordResetURI()) {
+      this._handleFlowResultAsync({ requestType: "cancelled" }, uri);
+    }
     this.webView.goBack();
+
     return true;
   }
 
