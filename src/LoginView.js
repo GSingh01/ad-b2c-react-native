@@ -148,6 +148,7 @@ export default class LoginView extends PureComponent {
         renderLoading={renderLoading}
         startInLoadingState
         onError={this.onWebViewError}
+        androidLayerType="hardware"
         ref={c => {
           this.webView = c;
         }}
