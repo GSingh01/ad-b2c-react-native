@@ -130,7 +130,7 @@ export default class LoginView extends PureComponent {
   }
   render() {
     const { uri, loaded } = this.state;
-    const { renderLoading, onFail, ...rest } = this.props;
+    const { renderLoading, renderError, onFail, ...rest } = this.props;
 
     if (!loaded) {
       return renderLoading();
@@ -146,6 +146,7 @@ export default class LoginView extends PureComponent {
         onNavigationStateChange={this.onNavigationStateChangeAsync}
         onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
         renderLoading={renderLoading}
+        renderError={renderError}
         startInLoadingState
         onError={this.onWebViewError}
         androidLayerType="hardware"
