@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { WebView } from "react-native-webview";
 import adService from "./ADService";
 import { RequestType } from "./Constants";
-import { BackHandler, Platform } from "react-native";
+import { BackHandler, Platform, View } from "react-native";
 
 export default class LoginView extends PureComponent {
   constructor(props) {
@@ -22,7 +22,8 @@ export default class LoginView extends PureComponent {
     adService.init(props);
     this.state = {
       uri: adService.getLoginURI(),
-      loaded: false
+      loaded: false,
+      renderExitDone: false
     };
   }
   _backHandler() {
@@ -41,7 +42,7 @@ export default class LoginView extends PureComponent {
     if (isAuthentic) {
       this.props.onSuccess();
     } else {
-      this.setState({ loaded: true });
+      this.setState({ loaded: true, renderExitDone: false });
     }
   }
 
@@ -113,6 +114,7 @@ export default class LoginView extends PureComponent {
         currentUri.indexOf(adService.passwordResetPolicy) > -1
           ? adService.passwordResetPolicy
           : adService.loginPolicy;
+      this.setState({ renderExitDone: true, renderExit: false });
       const reqResult = await adService.fetchAndSetTokenAsync(
         result.data,
         policy
@@ -120,6 +122,7 @@ export default class LoginView extends PureComponent {
       if (reqResult.isValid) {
         this.props.onSuccess();
       } else {
+        this.setState({ renderExitDone: false, renderExit: false });
         this.props.onFail(reqResult.data);
       }
     }
@@ -128,32 +131,53 @@ export default class LoginView extends PureComponent {
   onWebViewError({ nativeEvent: e }) {
     this.props.onFail(`Error accessing ${e.url}, ${e.description}`);
   }
+
+  setRenderExit = renderExit => {
+    const { renderExitDone } = this.state;
+    if (!renderExitDone) {
+      this.setState({ renderExit });
+    }
+  };
   render() {
-    const { uri, loaded } = this.state;
-    const { renderLoading, renderError, onFail, ...rest } = this.props;
+    const { uri, loaded, renderExit } = this.state;
+    const {
+      renderLoading,
+      renderError,
+      renderExitButton,
+      onFail,
+      containerStyle,
+      ...rest
+    } = this.props;
 
     if (!loaded) {
       return renderLoading();
     }
 
-    return (
-      <WebView
-        userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15"
-        incognito
-        {...rest}
-        originWhitelist={["*"]} // refer: https://github.com/facebook/react-native/issues/20917
-        source={{ uri }}
-        onNavigationStateChange={this.onNavigationStateChangeAsync}
-        onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
-        renderLoading={renderLoading}
-        renderError={renderError}
-        startInLoadingState
-        onError={this.onWebViewError}
-        androidLayerType="hardware"
-        ref={c => {
-          this.webView = c;
-        }}
-      />
-    );
+    if (loaded) {
+      return (
+        <View style={containerStyle}>
+          {renderExitButton(renderExit)}
+          <WebView
+            userAgent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15"
+            incognito
+            {...rest}
+            originWhitelist={["*"]} // refer: https://github.com/facebook/react-native/issues/20917
+            source={{ uri }}
+            onNavigationStateChange={this.onNavigationStateChangeAsync}
+            onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
+            renderLoading={renderLoading}
+            renderError={renderError}
+            startInLoadingState
+            onLoad={() => this.setRenderExit(true)}
+            onLoadStart={() => this.setRenderExit(false)}
+            onError={this.onWebViewError}
+            androidLayerType="hardware"
+            ref={c => {
+              this.webView = c;
+            }}
+          />
+        </View>
+      );
+    }
   }
 }

@@ -1,2 +1,2 @@
-const Result = (isValid, data) => ({ isValid, data });
+const Result = (isValid, data) => ({isValid, data});
 export default Result;
