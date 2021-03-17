@@ -139,7 +139,7 @@ export default class LoginView extends PureComponent {
         renderLoading={renderLoading}
         startInLoadingState
         onError={this.onWebViewError}
-        ref={(c) => {
+        forwardRef={(c) => {
           this.webView = c;
         }}
       />
