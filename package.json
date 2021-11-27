@@ -1,67 +1,19 @@
 {
-  "name": "ad-b2c-react-native",
-  "version": "1.1.5",
-  "description": "React Native Azure B2C auth using JS. This doesn't require eject from expo.",
-  "main": "index.js",
-  "files": [
-    "index.js",
-    "src"
-  ],
-  "scripts": {
-    "test": "jest",
-    "upgrade-interactive": "npm-check --update"
-  },
-  "jest": {
-    "preset": "react-native",
-    "transform": {
-      "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
-    },
-    "transformIgnorePatterns": [
-      "/node_modules/(?!react-native|react-clone-referenced-element|react-navigation)"
-    ],
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ],
-    "automock": false,
-    "setupFiles": [
-      "./setupJest.js"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GSingh01/ad-b2c-react-native.git"
-  },
-  "keywords": [
-    "react native b2c",
-    "b2c ejectless"
-  ],
-  "author": "Guriqbal Singh",
+  "name": "ad-b2c-react-native-workspace",
+  "repository": "https://github.com/GSingh01/ad-b2c-react-native.git",
+  "author": "gsingh01 <guriqbalsingh_hanjra@yahoo.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/GSingh01/ad-b2c-react-native/issues"
-  },
-  "homepage": "https://github.com/GSingh01/ad-b2c-react-native#readme",
-  "peerDependencies": {
-    "react": "^16.8.3",
-    "react-native-webview": "^7.0.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/preset-env": "^7.9.5",
-    "babel-jest": "^25.3.0",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2",
-    "enzyme-to-json": "^3.4.4",
-    "jest": "^25.3.0",
-    "jest-fetch-mock": "^3.0.3",
-    "npm-check": "^5.9.2",
-    "react": "^16.13.1",
-    "react-addons-test-utils": "^15.6.2",
-    "react-dom": "^16.13.1",
-    "react-native": "^0.62.2",
-    "react-native-webview": "^9.1.3",
-    "react-test-renderer": "^16.13.1",
-    "tern": "^0.24.3"
-  }
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "nohoist": [
+    "**/react-native",
+    "**/react-native/**",
+    "**/expo",
+    "**/expo/**",
+    "**/@babel/core",
+    "**/@babel/core/**"
+  ],
+  "packageManager": "yarn@3.1.0"
 }
