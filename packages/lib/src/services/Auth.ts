@@ -41,7 +41,8 @@ export default class Auth {
   IdTokenKey: string;
   RefreshTokenKey: string;
   ExpiresOnKey: string;
-  fetchInstance: Promise<Response> | null = null;
+  fetchInstance: Promise<any> | null = null;
+  origin: { [x: string]: string };
 
   constructor(props: Props) {
     this.tenant = props.tenant;
@@ -70,6 +71,11 @@ export default class Auth {
     this.IdTokenKey = "idToken";
     this.RefreshTokenKey = "refreshToken";
     this.ExpiresOnKey = "expiresOn";
+    this.origin = {
+      [this.passwordResetPolicy]: "password",
+      [this.loginPolicy]: "",
+      [this.profileEditPolicy]: "edit",
+    };
   }
 
   loadFromStoreAsync = async (): Promise<boolean> => {
@@ -96,8 +102,8 @@ export default class Auth {
     return this.isTokenValid(this.tokenResult.expiresOn);
   };
 
-  loginAsync = async (code: string) =>
-    this.fetchAndSetTokenAsync(code, this.loginPolicy, false);
+  loginAsync = async (code: string, origin: string) =>
+    this.fetchAndSetTokenAsync(code, this.getPolicyByOrigin(origin), false);
 
   getTokensAsync = async () => {
     if (
@@ -124,7 +130,7 @@ export default class Auth {
       idToken: "",
       refreshToken: "",
       expiresOn: 0,
-      tokenType: "bearer",
+      tokenType: "",
     };
     if (this.secureStore) {
       await Promise.all([
@@ -157,6 +163,7 @@ export default class Auth {
       uri += `&redirect_uri=${this.redirectURI}`;
       uri += "&response_mode=query";
       uri += `&scope=${this.scope}`;
+      uri += this.origin[policy] ? `&state=${this.origin[policy]}` : "";
     }
     return uri;
   };
@@ -168,6 +175,16 @@ export default class Auth {
     return new Date().getTime() <= expiry * 1000;
   };
 
+  private getPolicyByOrigin(state: string) {
+    switch (state) {
+      case this.origin[this.passwordResetPolicy]:
+        return this.passwordResetPolicy;
+      case this.origin[this.profileEditPolicy]:
+        return this.profileEditPolicy;
+      default:
+        return this.loginPolicy;
+    }
+  }
   private fetchAndSetTokenAsync = async (
     code: string,
     policy: string,
@@ -184,8 +201,8 @@ export default class Auth {
     }
 
     try {
-      const response = await this.fetchInstance;
-      const res: IAuthFetchResponse = await response.json();
+      const res = (await this.fetchInstance) as unknown as IAuthFetchResponse;
+
       await this.setTokenDataAsync({
         tokenType: res.token_type,
         accessToken: res.access_token,
@@ -237,16 +254,17 @@ export default class Auth {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          accept: "application/json",
         },
         body,
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error_description);
+        throw new Error(data?.error_description ?? JSON.stringify(data));
       }
 
-      return response;
+      return data;
     }
   };
 

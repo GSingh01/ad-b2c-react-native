@@ -9,7 +9,12 @@
   ],
   "scripts": {
     "prepare": "echo something",
-    "test": "test"
+    "test": "jest"
+  },
+  "jest": {
+    "setupFiles": [
+      "../../setupJest.js"
+    ]
   },
   "repository": {
     "type": "git",
@@ -29,13 +34,18 @@
   },
   "homepage": "https://github.com/GSingh01/ad-b2c-react-native#readme",
   "peerDependencies": {
-    "expo-web-browser": "^10.0.3",
     "react": "^17.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "@babel/preset-flow": "^7.16.5",
+    "@babel/preset-react": "^7.16.5",
+    "@babel/preset-typescript": "^7.16.5",
     "@types/react": "^17.0.32",
     "@typescript-eslint/eslint-plugin": "^5.3.0",
     "@typescript-eslint/parser": "^5.3.0",
+    "babel-jest": "^27.4.5",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-typescript": "^15.0.0",
@@ -44,9 +54,14 @@
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "expo-web-browser": "10.0.3",
+    "jest": "^27.4.5",
+    "jest-fetch-mock": "^3.0.3",
     "prettier": "^2.4.1",
     "react": "17.0.1",
+    "react-test-renderer": "^17.0.2",
     "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "expo-web-browser": "^10.1.0"
   }
 }

@@ -17,7 +17,8 @@ export interface IAuth {
   signInAsync: () => Promise<WebBrowser.WebBrowserAuthSessionResult>;
   resetPasswordAsync: () => Promise<WebBrowser.WebBrowserAuthSessionResult>;
   handleRedirectAsync: (
-    code: string
+    code: string,
+    state: string
   ) => Promise<WebBrowser.WebBrowserCompleteAuthSessionResult>;
   isAuthentic: boolean;
 }

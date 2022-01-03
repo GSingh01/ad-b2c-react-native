@@ -17,7 +17,7 @@ const initialState: IAuth = {
   signInAsync: async () => ({} as WebBrowser.WebBrowserAuthSessionResult),
   resetPasswordAsync: async () =>
     ({} as WebBrowser.WebBrowserAuthSessionResult),
-  handleRedirectAsync: async (code: string) =>
+  handleRedirectAsync: async (code: string, state: string) =>
     ({} as WebBrowser.WebBrowserCompleteAuthSessionResult),
   isAuthentic: false,
 };
@@ -27,6 +27,9 @@ export const AuthContext = createContext(initialState);
 interface IAuthProviderProps extends AuthServiceProps {
   children: ReactNode;
   loadingElement: React.ReactElement;
+  createNewTask?: boolean;
+  showInRecents?: boolean;
+  scope?: string;
 }
 
 class AuthNotInitError extends Error {
@@ -35,9 +38,22 @@ class AuthNotInitError extends Error {
   }
 }
 
+const openAuthSessionAsync = async (
+  url: string,
+  redirectUri: string,
+  showInRecents: boolean,
+  createTask: boolean
+) =>
+  WebBrowser.openAuthSessionAsync(url, redirectUri, {
+    showInRecents: showInRecents,
+    createTask: createTask,
+  });
+
 export default function AuthProvider({
   children,
   loadingElement,
+  showInRecents = false,
+  createNewTask = false,
   ...rest
 }: IAuthProviderProps) {
   const signinInProgress =
@@ -72,13 +88,12 @@ export default function AuthProvider({
           url: "",
         } as WebBrowser.WebBrowserAuthSessionResult;
       }
-
-      return WebBrowser.openAuthSessionAsync(
-        authServiceRef.current.getLoginURI(),
+      const loginUrl = authServiceRef.current.getLoginURI();
+      return openAuthSessionAsync(
+        loginUrl,
         rest.redirectURI,
-        {
-          showInRecents: true,
-        }
+        showInRecents,
+        createNewTask
       );
     }
   };
@@ -119,9 +134,11 @@ export default function AuthProvider({
     if (!authServiceRef.current) {
       throw new AuthNotInitError();
     }
-    const res = await WebBrowser.openAuthSessionAsync(
+    const res = await openAuthSessionAsync(
       authServiceRef.current.getProfileEditURI(),
-      rest.redirectURI
+      rest.redirectURI,
+      showInRecents,
+      createNewTask
     );
     return res;
   };
@@ -131,21 +148,22 @@ export default function AuthProvider({
       throw new AuthNotInitError();
     }
 
-    const res = WebBrowser.openAuthSessionAsync(
+    const res = openAuthSessionAsync(
       authServiceRef.current.getPasswordResetURI(),
-      rest.redirectURI
+      rest.redirectURI,
+      showInRecents,
+      createNewTask
     );
 
     return res;
   };
-  const handleRedirectAsync = async (authCode?: string) => {
+  const handleRedirectAsync = async (authCode?: string, state?: string) => {
     if (!authServiceRef.current) {
       throw new AuthNotInitError();
     }
-
     const res = WebBrowser.maybeCompleteAuthSession();
     if (authCode) {
-      await authServiceRef.current.loginAsync(authCode);
+      await authServiceRef.current.loginAsync(authCode, state ?? "");
       setIsAuthentic(true);
     }
 
