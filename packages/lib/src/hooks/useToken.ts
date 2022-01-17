@@ -1,8 +1,5 @@
-import {
-  WebBrowserAuthSessionResult,
-  WebBrowserResult,
-} from "expo-web-browser";
-import { useContext, useEffect, useReducer, useRef, useState } from "react";
+import { WebBrowserAuthSessionResult } from "expo-web-browser";
+import { useContext, useReducer } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 
 interface IUseAuth {
