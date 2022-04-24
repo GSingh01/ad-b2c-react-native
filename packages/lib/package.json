@@ -9,20 +9,8 @@
   ],
   "scripts": {
     "prepare": "echo something",
-    "test": "jest"
-  },
-  "jest": {
-    "setupFiles": [
-      "../../setupJest.js"
-    ],
-    "preset": "react-native",
-    "transform": {
-      "^.+\\.(ts|js)x?$": "babel-jest"
-    },
-    "transformIgnorePatterns": [
-      "<rootDir>/node_modules/(react-clone-referenced-element|@react-native-community|react-navigation|@react-navigation/.*|@unimodules/.*|native-base|react-native-code-push)"
-    ],
-    "roots":["<rootDir>"]
+    "test": "jest",
+    "compile": "tsc"
   },
   "repository": {
     "type": "git",
@@ -50,6 +38,8 @@
     "@babel/preset-flow": "^7.16.5",
     "@babel/preset-react": "^7.16.5",
     "@babel/preset-typescript": "^7.16.5",
+    "@testing-library/jest-native": "^4.0.4",
+    "@testing-library/react-hooks": "^7.0.2",
     "@types/react": "^17.0.32",
     "@typescript-eslint/eslint-plugin": "^5.3.0",
     "@typescript-eslint/parser": "^5.3.0",

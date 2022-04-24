@@ -76,9 +76,13 @@ export default class Auth {
       [this.loginPolicy]: "",
       [this.profileEditPolicy]: "edit",
     };
+
+    this.getLoginURI = this.getLoginURI.bind(this);
+    this.getPasswordResetURI = this.getPasswordResetURI.bind(this);
+    this.getProfileEditURI = this.getProfileEditURI.bind(this);
   }
 
-  loadFromStoreAsync = async (): Promise<boolean> => {
+  async loadFromStoreAsync(): Promise<boolean> {
     if (!this.secureStore) {
       return false;
     }
@@ -100,12 +104,17 @@ export default class Auth {
     };
 
     return this.isTokenValid(this.tokenResult.expiresOn);
-  };
+  }
 
-  loginAsync = async (code: string, origin: string) =>
-    this.fetchAndSetTokenAsync(code, this.getPolicyByOrigin(origin), false);
+  async loginAsync(code: string, origin: string) {
+    return this.fetchAndSetTokenAsync(
+      code,
+      this.getPolicyByOrigin(origin),
+      false
+    );
+  }
 
-  getTokensAsync = async () => {
+  async getTokensAsync() {
     if (
       !this.isTokenValid(this.tokenResult.expiresOn) &&
       this.tokenResult.refreshToken
@@ -122,9 +131,9 @@ export default class Auth {
       id: this.tokenResult.idToken,
       expiresOn: this.tokenResult.expiresOn,
     };
-  };
+  }
 
-  localLogOutAsync = async () => {
+  async localLogOutAsync() {
     this.tokenResult = {
       accessToken: "",
       idToken: "",
@@ -141,22 +150,27 @@ export default class Auth {
         this.secureStore.deleteItemAsync(this.ExpiresOnKey),
       ]);
     }
-  };
+  }
 
-  getLoginURI = () => this.getStaticURI(this.loginPolicy, "authorize");
+  getLoginURI() {
+    return this.getStaticURI(this.loginPolicy, "authorize");
+  }
 
-  getLogoutURI = () =>
-    `${this.baseUri}/${this.loginPolicy}/oauth2/v2.0/logout?post_logout_redirect_uri=${this.redirectURI}`;
+  getLogoutURI() {
+    return `${this.baseUri}/${this.loginPolicy}/oauth2/v2.0/logout?post_logout_redirect_uri=${this.redirectURI}`;
+  }
 
-  getPasswordResetURI = () =>
-    `${this.getStaticURI(this.passwordResetPolicy, "authorize")}`;
+  getPasswordResetURI() {
+    return `${this.getStaticURI(this.passwordResetPolicy, "authorize")}`;
+  }
 
-  getProfileEditURI = () =>
-    `${this.getStaticURI(this.profileEditPolicy, "authorize")}`;
+  getProfileEditURI() {
+    return `${this.getStaticURI(this.profileEditPolicy, "authorize")}`;
+  }
 
   //Helpers
 
-  private getStaticURI = (policy: string, endPoint: string) => {
+  private getStaticURI(policy: string, endPoint: string) {
     let uri = `${this.baseUri}/${policy}/oauth2/v2.0/${endPoint}?`;
     if (endPoint === "authorize") {
       uri += `client_id=${this.appId}&response_type=code`;
@@ -166,14 +180,14 @@ export default class Auth {
       uri += this.origin[policy] ? `&state=${this.origin[policy]}` : "";
     }
     return uri;
-  };
+  }
 
-  private isTokenValid = (expiry: number): boolean => {
+  private isTokenValid(expiry: number): boolean {
     if (!expiry) {
       return false;
     }
     return new Date().getTime() <= expiry * 1000;
-  };
+  }
 
   private getPolicyByOrigin(state: string) {
     switch (state) {
@@ -185,11 +199,11 @@ export default class Auth {
         return this.loginPolicy;
     }
   }
-  private fetchAndSetTokenAsync = async (
+  private async fetchAndSetTokenAsync(
     code: string,
     policy: string,
     isRefreshTokenGrant: boolean
-  ) => {
+  ) {
     if (!this.fetchInstance) {
       this.fetchInstance = func(
         this.appId,
@@ -266,15 +280,15 @@ export default class Auth {
 
       return data;
     }
-  };
+  }
 
-  private setTokenDataAsync = async ({
+  private async setTokenDataAsync({
     tokenType,
     accessToken,
     idToken,
     refreshToken,
     expiresOn,
-  }: typeof this.tokenResult) => {
+  }: typeof this.tokenResult) {
     this.tokenResult = {
       tokenType,
       accessToken,
@@ -292,5 +306,5 @@ export default class Auth {
         this.secureStore.setItemAsync(this.ExpiresOnKey, expiresOn.toString()),
       ]);
     }
-  };
+  }
 }

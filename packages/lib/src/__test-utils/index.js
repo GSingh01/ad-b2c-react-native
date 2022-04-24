@@ -1,8 +1,9 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
+import AuthProvider from "../providers/AuthProvider";
 
 const AllTheProviders = ({ children }) => {
-  return <>{children}</>;
+  return <AuthProvider>{children}</AuthProvider>;
 };
 
 const customRender = (ui, options) =>

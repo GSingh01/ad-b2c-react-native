@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "ad-b2c-react-native",
+    "slug": "ad-b2c-react-native",
+    "version": "2.0.0",
+    "description": "React Native Azure B2C auth using JS. This doesn't require eject from expo.",
+    "sdkVersion": "43.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ]
+  }
+}

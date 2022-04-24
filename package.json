@@ -7,6 +7,10 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "test": "jest",
+    "watch": "jest --watch"
+  },
   "nohoist": [
     "**/react-native",
     "**/react-native/**",
@@ -20,12 +24,11 @@
     "@babel/core": "^7.16.5",
     "@babel/preset-env": "^7.16.5",
     "@babel/preset-typescript": "^7.16.5",
+    "@testing-library/jest-native": "^4.0.4",
+    "@testing-library/react-native": "^9.0.0",
     "@types/jest": "^27.0.3",
-    "babel-jest": "^27.4.5"
-  },
-  "jest": {
-    "setupFiles": [
-      "./setupJest.js"
-    ]
+    "babel-jest": "^27.4.5",
+    "jest": "^27.4.7",
+    "metro-react-native-babel-preset": "^0.66.2"
   }
 }

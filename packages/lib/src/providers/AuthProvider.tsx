@@ -1,10 +1,4 @@
-import React, {
-  ReactNode,
-  useRef,
-  createContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { ReactNode, useRef, createContext, useState } from "react";
 
 import * as WebBrowser from "expo-web-browser";
 import { IAuth } from "../interfaces";
@@ -26,7 +20,6 @@ export const AuthContext = createContext(initialState);
 
 interface IAuthProviderProps extends AuthServiceProps {
   children: ReactNode;
-  loadingElement: React.ReactElement;
   createNewTask?: boolean;
   showInRecents?: boolean;
   scope?: string;
@@ -51,7 +44,6 @@ const openAuthSessionAsync = async (
 
 export default function AuthProvider({
   children,
-  loadingElement,
   showInRecents = false,
   createNewTask = false,
   ...rest
@@ -60,9 +52,9 @@ export default function AuthProvider({
     useRef<null | Promise<WebBrowser.WebBrowserAuthSessionResult>>(null);
 
   const authServiceRef = useRef<AuthService>();
-  useEffect(() => {
+  if (!authServiceRef.current) {
     authServiceRef.current = new AuthService(rest);
-  }, []);
+  }
 
   const [isAuthentic, setIsAuthentic] = useState(false);
 
@@ -71,9 +63,9 @@ export default function AuthProvider({
       signinInProgress.current = func();
     }
 
-    const res = await signinInProgress.current;
-    signinInProgress.current = null;
-    return res;
+    return await signinInProgress.current.finally(
+      () => (signinInProgress.current = null)
+    );
 
     async function func() {
       if (!authServiceRef.current) {

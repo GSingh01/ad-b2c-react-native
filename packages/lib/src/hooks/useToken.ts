@@ -8,7 +8,7 @@ interface IUseAuth {
 }
 
 interface IAuthState extends IUseAuth {}
-export default function useAuth() {
+export default function useToken() {
   const {
     signInAsync,
     getTokensAsync: getTokenAsyncOrig,
@@ -61,12 +61,12 @@ export default function useAuth() {
       if (!isAuthentic) {
         const siginRes = await signInAsync();
 
-        if (siginRes.type === "success") {
+        if (siginRes?.type === "success") {
           setState({ error: "", isLoading: false });
           error = null;
         } else {
           setState({
-            error: siginRes.type,
+            error: siginRes?.type,
             isLoading: false,
           });
           error = siginRes;
