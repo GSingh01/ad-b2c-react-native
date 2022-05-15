@@ -30,7 +30,9 @@
   },
   "homepage": "https://github.com/GSingh01/ad-b2c-react-native#readme",
   "peerDependencies": {
-    "react": "^17.0.1"
+    "react": "^17.0.1",
+    "expo-web-browser": "^10.1.0"
+
   },
   "devDependencies": {
     "@babel/core": "^7.16.5",
@@ -57,9 +59,7 @@
     "prettier": "^2.4.1",
     "react": "17.0.1",
     "react-test-renderer": "^17.0.2",
-    "typescript": "^4.4.4"
-  },
-  "dependencies": {
+    "typescript": "^4.4.4",
     "expo-web-browser": "^10.1.0"
   }
 }
