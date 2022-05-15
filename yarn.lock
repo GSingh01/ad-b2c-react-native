@@ -4612,6 +4612,7 @@ __metadata:
     react-test-renderer: ^17.0.2
     typescript: ^4.4.4
   peerDependencies:
+    expo-web-browser: ^10.1.0
     react: ^17.0.1
   languageName: unknown
   linkType: soft
