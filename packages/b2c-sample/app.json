@@ -32,8 +32,8 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "authTenant": "GsinghTest01",
-      "authAppId": "8b08c91e-9244-452c-9546-85ab406d5a5c"
+      "authTenant": "<yourtenant>",
+      "authAppId": "<yourAppId>"
     }
   }
 }
