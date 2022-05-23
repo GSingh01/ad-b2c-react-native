@@ -51,12 +51,12 @@ export default function AuthProvider({
   const signinInProgress =
     useRef<null | Promise<WebBrowser.WebBrowserAuthSessionResult>>(null);
 
+  const [isAuthentic, setIsAuthentic] = useState(false);
+
   const authServiceRef = useRef<AuthService>();
   if (!authServiceRef.current) {
     authServiceRef.current = new AuthService(rest);
   }
-
-  const [isAuthentic, setIsAuthentic] = useState(false);
 
   const signInAsync = async () => {
     if (!signinInProgress.current) {

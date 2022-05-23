@@ -12,3 +12,4 @@ web-build/
 app.json
 # macOS
 .DS_Store
+.vscode/.react/ 

@@ -8,17 +8,16 @@
     "packages/*"
   ],
   "scripts": {
+    "start": "yarn workspace b2c-sample start",
+    "android": "yarn workspace b2c-sample start --android",
+    "ios": "yarn workspace b2c-sample start --ios",
+    "web": "yarn workspace b2c-sample start --web",
     "test": "jest",
     "watch": "jest --watch"
   },
-  "nohoist": [
-    "**/react-native",
-    "**/react-native/**",
-    "**/expo",
-    "**/expo/**",
-    "**/@babel/core",
-    "**/@babel/core/**"
-  ],
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
   "packageManager": "yarn@3.1.0",
   "devDependencies": {
     "@babel/core": "^7.16.5",
