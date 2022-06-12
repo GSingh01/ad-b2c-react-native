@@ -2,14 +2,19 @@
   "name": "ad-b2c-react-native",
   "version": "2.0.0",
   "description": "React Native Azure B2C auth using JS. This doesn't require eject from expo.",
-  "main": "index.ts",
   "files": [
-    "index.ts",
-    "src"
+    "src/**/*.js",
+    "src/**/*.d.ts",
+    "!src/**/*.test.js",
+    "!src/__*/**",
+    "./index.js",
+    "./index.d.ts"
   ],
   "scripts": {
+    "prepare": "tsc",
     "test": "jest",
-    "compile": "tsc"
+    "compile": "tsc",
+    "clean":"git clean -fX"
   },
   "repository": {
     "type": "git",

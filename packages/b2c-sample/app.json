@@ -31,10 +31,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {
-      "authTenant": "<YourTenant>",
-      "authAppId": "<YourAppId>"
-    },
     "sdkVersion": "45.0.0"
   },
   "name": "b2c-sample"

@@ -1,3 +1,10 @@
+src/**/*.js
+src/**/*.d.ts
+!src/**/*.test.js
+!src/__*/**
+index.js
+index.d.ts
+
 # Logs
 logs
 *.log

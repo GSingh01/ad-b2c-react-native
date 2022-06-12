@@ -6,4 +6,4 @@ node_modules
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-packages/b2c-sample/app.json
+packages/b2c-sample/env/config.js
