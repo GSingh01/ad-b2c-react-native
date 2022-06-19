@@ -136,7 +136,7 @@ describe("useToken", () => {
           expiresOn: 0,
           access: "",
           id: "",
-          error: null,
+          error: "",
           isAuthentic: false,
         };
         await waitFor(() =>
