@@ -8,7 +8,12 @@ export enum RouteNames {
 }
 
 export type RootStackParamList = {
-  [RouteNames.redirect]: { code: string; state: string };
+  [RouteNames.redirect]: {
+    code: string;
+    state: string;
+    error: string;
+    error_description: string;
+  };
   [RouteNames.home]: undefined;
   [RouteNames.private]: undefined;
 };

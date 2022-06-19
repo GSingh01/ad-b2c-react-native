@@ -63,6 +63,22 @@ describe("useToken", () => {
         expect(result.current.isLoading).toBe(false);
       });
 
+      it("sets isLoading false and error corrects when signInAsync receives password reset redirect", async () => {
+        const { result } = renderHook(() => useToken());
+        const { result: contextRes } = renderHook(() =>
+          useContext(AuthContext)
+        );
+        contextRes.current.signInAsync.mockResolvedValueOnce({
+          type: "success",
+          url: "AADB2C90118",
+        });
+
+        await waitFor(result.current.getTokensAsync);
+
+        expect(result.current.error).toBe("Resetting password AADB2C90118");
+        expect(result.current.isLoading).toBe(false);
+      });
+
       it("sets isLoading false and error correctly when signInAsync returns type is not success", async () => {
         const { result } = renderHook(() => useToken());
         const { result: contextRes } = renderHook(() =>

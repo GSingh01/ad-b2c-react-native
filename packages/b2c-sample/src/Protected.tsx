@@ -28,6 +28,15 @@ export default function () {
       setTokenRes(x);
     });
   }, [isAuthentic]);
+
+  useEffect(() => {
+    if (error.includes("AADB2C90118")) {
+      setTimeout(() => {
+        resetPasswordAsync();
+      }, 1);
+    }
+  }, [error]);
+
   if (error) {
     return <Text>Error: {error}</Text>;
   }

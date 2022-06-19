@@ -6,7 +6,7 @@
 
 ### AuthProvider
 
-Wrap root navigation routes with <strong>AppProvider<strong>
+Wrap root navigation routes with <strong>AppProvider</strong>
 
 ```
 import React from 'react';
@@ -32,8 +32,10 @@ export default function App() {
             appId="<B2CAppID>"
             loginPolicy="<B2CSignInPolicy>"
             passwordResetPolicy="<B2CPasswordResetPolicy>"
-            profileEditPolicy="<B2CProfleEditPolicy"
+            profileEditPolicy="<B2CProfleEditPolicy>"
             redirectURI={Linking.createURL("redirect")} //redirect uri
+            showInRecents = <Boolean>, // optional, default = false
+            createNewTask = <Boolean>, //optional, default = false
           >
           <Routes/>
       </AuthProvider>
@@ -80,6 +82,18 @@ Log the user in(if not already) and returns following
 }
 ```
 
+<strong>Note</strong>: If user presses forgot password, then by default AD B2C redirects back to app and it is required to be handled manually. Please check packages/b2c-sample/src/Protected.tsx for more info but code looks like:
+
+```
+useEffect(() => {
+    if (error.includes("AADB2C90118")) {
+      setTimeout(() => {
+        resetPasswordAsync();
+      }, 1);
+    }
+  }, [error]);
+```
+
 </details>
 
 <details>
@@ -99,7 +113,7 @@ starts profile edit workflow
 
 ##### resetPasswordAsync:
 
-starts reset password workflow
+starts reset password workflow.
 
 ##### handleRedirectAsync:
 

@@ -62,22 +62,27 @@ export default function useToken() {
         const siginRes = await signInAsync();
 
         if (siginRes?.type === "success") {
-          setState({ error: "", isLoading: false });
-          error = null;
-        } else {
+          error = siginRes.url?.includes("AADB2C90118")
+            ? "Resetting password AADB2C90118"
+            : "";
           setState({
-            error: siginRes?.type,
+            error,
             isLoading: false,
           });
-          error = siginRes;
+        } else {
+          error = siginRes?.type;
+          setState({
+            error,
+            isLoading: false,
+          });
         }
       }
     } catch (ex: any) {
+      error = ex;
       setState({
-        error: (ex as Error).message ?? JSON.stringify(ex),
+        error: (error as Error).message ?? JSON.stringify(error),
         isLoading: false,
       });
-      error = ex;
     }
 
     return { expiresOn: 0, access: "", id: "", error, isAuthentic };
