@@ -2,7 +2,7 @@
 
 **Notes**
 
-> Any **code** below is just **a sample implementation** to just demonstrate the API of the components. As-Is **copy paste** of below **will not work**.
+> Any **code** below is just a **sample implementation** to just demonstrate the API of the components. As-Is **copy paste** of below **will not work**.
 
 ### AuthProvider
 

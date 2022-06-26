@@ -11,7 +11,8 @@
     "./index.d.ts"
   ],
   "scripts": {
-    "prepare": "tsc",
+    "prepare": "yarn compile",
+    "prep-publish": "yarn prepare && yarn publish",
     "test": "jest",
     "compile": "tsc",
     "clean":"git clean -fX"

@@ -6,6 +6,8 @@ Thanks to https://github.com/sonyarouje/react-native-ad-b2c and https://github.c
 
 Feel free to contribute or sponsor. :)
 
+> **Note**: The version 2.X is not compatible with 1.X version. For 1.x docs, visit https://www.npmjs.com/package/ad-b2c-react-native -> Versions
+
 ## Contribute
 
 Create a fork and after cloning locally, do following
