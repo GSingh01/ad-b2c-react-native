@@ -14,7 +14,7 @@
     "web": "yarn workspace b2c-sample start --web",
     "test": "jest",
     "watch": "jest --watch",
-    "compile":"yarn workspace ad-b2c-react-native compile",
+    "compile": "yarn workspace ad-b2c-react-native compile",
     "publish": "yarn workspace ad-b2c-react-native prep-publish",
     "clean": "yarn workspace ad-b2c-react-native clean"
   },

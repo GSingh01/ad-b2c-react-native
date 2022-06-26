@@ -15,7 +15,7 @@
     "prep-publish": "yarn prepare && yarn publish",
     "test": "jest",
     "compile": "tsc",
-    "clean":"git clean -fX"
+    "clean": "git clean -fX"
   },
   "repository": {
     "type": "git",
