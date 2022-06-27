@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "cpToBin": "shx cp ../../node_modules/.bin/react-native ./node_modules/.bin/react-native && shx cp ../../node_modules/.bin/react-native.cmd ./node_modules/.bin/react-native.cmd",
+    "cpToBin": "shx cp ../../node_modules/.bin/react-native* ./node_modules/.bin/",
     "postinstall": "expo-yarn-workspaces postinstall & yarn cpToBin"
   },
   "expo-yarn-workspaces": {
