@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "prepare": "yarn compile",
-    "prep-publish": "yarn prepare && yarn publish",
+    "prep-publish": "yarn prepare && yarn npm publish",
     "test": "jest",
     "compile": "tsc",
     "clean": "git clean -fX"
