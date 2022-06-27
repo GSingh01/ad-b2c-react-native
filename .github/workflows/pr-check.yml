@@ -1,4 +1,4 @@
-name: npm publish
+name: Pr check
 
 on:
   pull_request:
