@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -29,6 +29,8 @@ export default function App() {
         passwordResetPolicy="B2C_1_PwdReset"
         profileEditPolicy="B2C_1_ProfleEdit"
         redirectURI={Linking.createURL("redirect")}
+        createNewTask={Constants.appOwnership === "expo"}
+        showInRecents={Constants.appOwnership === "expo"}
       >
         <Stack.Navigator>
           <Stack.Screen name={RouteNames.home} component={Home} />

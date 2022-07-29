@@ -2887,7 +2887,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.14":
+"@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.14, @types/babel__core@npm:^7.1.19":
   version: 7.1.19
   resolution: "@types/babel__core@npm:7.1.19"
   dependencies:
@@ -3065,25 +3065,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:>=16.9.0":
-  version: 18.0.9
-  resolution: "@types/react@npm:18.0.9"
+"@types/react@npm:17.0.21":
+  version: 17.0.21
+  resolution: "@types/react@npm:17.0.21"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: 162364dad716d9017ee34aabf2ea37499709ebbdef70392ae1b39225985971e1a46f121efb9c5c7da92144ee1d96d4525df806a7c1c03a5db7fd31dd034ddc7a
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:^17.0.32, @types/react@npm:~17.0.21":
-  version: 17.0.45
-  resolution: "@types/react@npm:17.0.45"
-  dependencies:
-    "@types/prop-types": "*"
-    "@types/scheduler": "*"
-    csstype: ^3.0.2
-  checksum: 3cc13a02824c13f6fa4807a83abd065ac1d9943359e76bd995cc7cd2b4148c1176ebd54a30a9f4eb8a0f141ff359d712876f256c4fee707e4290607ef8410b3e
+  checksum: a590bd2e50e4ec0b1957388e198cf248bac3051e525e036901dea10f7d12203bf1c58350aa899e66494cbf8a60ee56402522273866c29748217f72552bb27d04
   languageName: node
   linkType: hard
 
@@ -3631,6 +3620,7 @@ __metadata:
     "@babel/preset-typescript": ^7.16.5
     "@testing-library/jest-native": ^4.0.4
     "@testing-library/react-native": ^9.0.0
+    "@types/babel__core": ^7.1.19
     "@types/jest": ^27.0.3
     babel-jest: ^27.4.5
     jest: ^27.4.7
@@ -4244,6 +4234,7 @@ __metadata:
     "@babel/core": ^7.12.9
     "@react-navigation/native": ^6.0.6
     "@react-navigation/native-stack": ^6.2.5
+    "@types/babel__core": ^7.1.19
     "@types/react": ~17.0.21
     "@types/react-native": ~0.67.6
     ad-b2c-react-native: 2.0.0

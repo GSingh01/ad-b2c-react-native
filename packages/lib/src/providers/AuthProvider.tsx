@@ -113,8 +113,11 @@ export default function AuthProvider({
     }
     try {
       await authServiceRef.current.localLogOutAsync();
-      const res = await WebBrowser.openBrowserAsync(
-        authServiceRef.current.getLogoutURI()
+      const res = await openAuthSessionAsync(
+        authServiceRef.current.getLogoutURI(),
+        rest.redirectURI,
+        showInRecents,
+        createNewTask
       );
       return res;
     } finally {
@@ -153,6 +156,7 @@ export default function AuthProvider({
     if (!authServiceRef.current) {
       throw new AuthNotInitError();
     }
+
     const res = WebBrowser.maybeCompleteAuthSession();
     if (authCode) {
       await authServiceRef.current.loginAsync(authCode, state ?? "");

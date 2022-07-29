@@ -13,18 +13,18 @@ export default function () {
   const nav = useNavigation<RootStackNavigationProp>();
   const route = useRoute<AuthScreenRouteProp>();
   useEffect(() => {
-    const { code, state } = route.params;
-    handleRedirectAsync(code, state)
+    const params = route.params;
+    handleRedirectAsync(params?.code, params?.state)
       .then(() => {
         if (nav.canGoBack()) {
           nav.goBack();
         } else {
-          nav.navigate(RouteNames.home);
+          nav.replace(RouteNames.home);
         }
       })
-      .catch((ex) => {
+      .catch((ex: any) => {
         console.log(ex);
-        nav.navigate(RouteNames.home);
+        nav.replace(RouteNames.home);
       });
   }, [route.params]);
   return <Text>Authenticating</Text>;

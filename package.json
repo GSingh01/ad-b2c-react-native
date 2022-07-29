@@ -11,7 +11,7 @@
     "start": "yarn workspace b2c-sample start",
     "android": "yarn workspace b2c-sample start --android",
     "ios": "yarn workspace b2c-sample start --ios",
-    "web": "yarn workspace b2c-sample start --web",
+    "web": "yarn workspace b2c-sample start --web --https",
     "test": "jest",
     "watch": "jest --watch",
     "compile": "yarn workspace ad-b2c-react-native compile",
@@ -28,9 +28,13 @@
     "@babel/preset-typescript": "^7.16.5",
     "@testing-library/jest-native": "^4.0.4",
     "@testing-library/react-native": "^9.0.0",
+    "@types/babel__core": "^7.1.19",
     "@types/jest": "^27.0.3",
     "babel-jest": "^27.4.5",
     "jest": "^27.4.7",
     "metro-react-native-babel-preset": "^0.66.2"
+  },
+  "resolutions": {
+    "@types/react": "17.0.21"
   }
 }

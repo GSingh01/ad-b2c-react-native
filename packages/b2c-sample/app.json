@@ -29,7 +29,8 @@
       "package": "ad.b2c.react.native.sample"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "build": { "babel": { "include": [ "ad-b2c-react-native" ] }}
     },
     "sdkVersion": "45.0.0"
   },
