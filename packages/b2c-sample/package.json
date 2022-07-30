@@ -21,7 +21,7 @@
   "dependencies": {
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
-    "ad-b2c-react-native": "2.0.0",
+    "ad-b2c-react-native": "2.0.1",
     "expo": "^45.0.0",
     "expo-constants": "~13.1.1",
     "expo-dev-client": "~1.0.1",
