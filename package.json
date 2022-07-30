@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "start": "yarn workspace b2c-sample start",
-    "android": "yarn workspace b2c-sample start --android",
-    "ios": "yarn workspace b2c-sample start --ios",
-    "web": "yarn workspace b2c-sample start --web --https",
+    "android": "yarn workspace b2c-sample android",
+    "ios": "yarn workspace b2c-sample ios",
+    "web": "yarn workspace b2c-sample web",
     "test": "jest",
     "watch": "jest --watch",
     "compile": "yarn workspace ad-b2c-react-native compile",

@@ -4240,11 +4240,11 @@ __metadata:
     ad-b2c-react-native: 2.0.0
     expo: ^45.0.0
     expo-constants: ~13.1.1
-    expo-dev-client: ~0.9.6
+    expo-dev-client: ~1.0.1
     expo-linking: ~3.1.0
     expo-modules-core: ~0.9.2
     expo-status-bar: ~1.3.0
-    expo-web-browser: ~10.2.0
+    expo-web-browser: ~10.2.1
     expo-yarn-workspaces: ^1.6.0
     react: 17.0.2
     react-dom: 17.0.2
@@ -7473,55 +7473,55 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-dev-client@npm:~0.9.6":
-  version: 0.9.6
-  resolution: "expo-dev-client@npm:0.9.6"
+"expo-dev-client@npm:~1.0.1":
+  version: 1.0.1
+  resolution: "expo-dev-client@npm:1.0.1"
   dependencies:
     "@expo/config-plugins": ^4.0.14
-    expo-dev-launcher: 0.11.6
-    expo-dev-menu: 0.10.7
-    expo-dev-menu-interface: 0.6.0
+    expo-dev-launcher: 1.0.1
+    expo-dev-menu: 1.0.1
+    expo-dev-menu-interface: 0.7.0
     expo-manifests: ~0.3.0
     expo-updates-interface: ~0.6.0
   peerDependencies:
     expo: "*"
-  checksum: ddc7cf9b8f7679d28cf123485a59fdd5df439d995278a14565e4fe8876f971dbaf03dd925ca406a1d3afecebb77ee86f989f0ceaef84c9536e7a4e4a16fb7c35
+  checksum: aa78df986cca4ae92dc0415fea77c1949d6c6097962ef2ba79e0dc48377d97f967a2aa13b5ba916481e7cedf53fd7ced358737a492297e7b191a671f3d15a320
   languageName: node
   linkType: hard
 
-"expo-dev-launcher@npm:0.11.6":
-  version: 0.11.6
-  resolution: "expo-dev-launcher@npm:0.11.6"
+"expo-dev-launcher@npm:1.0.1":
+  version: 1.0.1
+  resolution: "expo-dev-launcher@npm:1.0.1"
   dependencies:
     "@expo/config-plugins": ^4.0.14
-    expo-dev-menu: 0.10.7
+    expo-dev-menu: 1.0.1
     resolve-from: ^5.0.0
     semver: ^7.3.5
   peerDependencies:
     expo: "*"
-  checksum: 2af8731c06d59e56c624ade36cbaca9892dd60244dc3606eaa8a21382eb42a1d8add32489f0104579d936b997b4996d427815f2fb34eebb650ab57e9d29abc25
+  checksum: c90f2c28092ed4e03432ad76a4c9d576704290de2e1598b742fe2170270d33fd52572b0a7f071b7875902b0e0d28e701978f20745cf937bce1c8ac6b7187db94
   languageName: node
   linkType: hard
 
-"expo-dev-menu-interface@npm:0.6.0":
-  version: 0.6.0
-  resolution: "expo-dev-menu-interface@npm:0.6.0"
+"expo-dev-menu-interface@npm:0.7.0":
+  version: 0.7.0
+  resolution: "expo-dev-menu-interface@npm:0.7.0"
   peerDependencies:
     expo: "*"
-  checksum: e4ef76d5ff7f23b92661c03e83bc1b067fd43f5b6c56673fcd11b09b960f780a32271fcebcd10cec1f0751e83119da77a72139d88abccaf30acb095ccbcf7006
+  checksum: d1869bdcec37e5612583de891b445efc7e045844b9da5a03d2ffb46e0e52b58e4a085d9a22f222dbd4f5aeaefbe90fb01db827a95a1dba54def03fdd4bc46f5f
   languageName: node
   linkType: hard
 
-"expo-dev-menu@npm:0.10.7":
-  version: 0.10.7
-  resolution: "expo-dev-menu@npm:0.10.7"
+"expo-dev-menu@npm:1.0.1":
+  version: 1.0.1
+  resolution: "expo-dev-menu@npm:1.0.1"
   dependencies:
     "@expo/config-plugins": ^4.0.14
-    expo-dev-menu-interface: 0.6.0
+    expo-dev-menu-interface: 0.7.0
     semver: ^7.3.5
   peerDependencies:
     expo: "*"
-  checksum: a1dbb82b7c1ba2f0b3eacab678c8da2b9af5493454e0269a687a425dfcf474e95869ff8748a3efe243c58344293a8d4cfe78b15c25531dfe11ee6563431eef21
+  checksum: 73ea582524a05c88b136eecb8556c62db9389c93ffe59faf1a5c19602a4db7270aa83cb41002c9173bacb0b5fad53256e201eb6bb3118e5b537c45cd6aaa2489
   languageName: node
   linkType: hard
 
@@ -7665,7 +7665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-web-browser@npm:^10.1.0, expo-web-browser@npm:~10.2.0":
+"expo-web-browser@npm:^10.1.0":
   version: 10.2.0
   resolution: "expo-web-browser@npm:10.2.0"
   dependencies:
@@ -7673,6 +7673,17 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 60b6aceed8e1b9eefdf67dbf436768b446072210df0ef75d9c79831de248ff4054162c5df8613bb46f242a15be912f77006717a487f5eb0ecf64b150363cc35d
+  languageName: node
+  linkType: hard
+
+"expo-web-browser@npm:~10.2.1":
+  version: 10.2.1
+  resolution: "expo-web-browser@npm:10.2.1"
+  dependencies:
+    compare-urls: ^2.0.0
+  peerDependencies:
+    expo: "*"
+  checksum: 6097bb5ed3ef45947f782262240774fc29e683548fc934fae11194e596ac560242c225dcc8fd601aae808248dddf07e6647625553203f5cc10d5918c1208b19b
   languageName: node
   linkType: hard
 
