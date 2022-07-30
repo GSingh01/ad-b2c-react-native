@@ -56,7 +56,7 @@ describe("AuthProvider", () => {
       { showInRecents: true, createNewTask: false },
       { showInRecents: false, createNewTask: true },
     ])(
-      "opens authSession with showRecents: $showInRecents & createNewTask: $createNewTask",
+      "with showRecents: $showInRecents & createNewTask: $createNewTask opens authSession",
       async ({ showInRecents, createNewTask }) => {
         const loginUri = "protocol://loginUrl";
         let signInPromise = null;
@@ -285,7 +285,7 @@ describe("AuthProvider", () => {
 
   describe("logOutAsync", () => {
     beforeEach(() => {
-      WebBrowser.openBrowserAsync.mockClear();
+      WebBrowser.openAuthSessionAsync.mockClear();
     });
 
     it("calls authService.localLogOutAsync & sets isAuthentic false", async () => {
@@ -321,48 +321,62 @@ describe("AuthProvider", () => {
       expect(isAuthenticVal).toBe(false);
     });
 
-    it("calls WebBrowser.OpenBrowserAsyn correctly & sets isAuthentic false & returns browser result", async () => {
-      let logOutResPromise;
-      const logoutUri = "testLogoutUri";
-      const browserRes = "mockedBrowserResult";
-      WebBrowser.openBrowserAsync.mockResolvedValueOnce(browserRes);
-      const Comp = () => {
-        const { logOutAsync, handleRedirectAsync } = useContext(AuthContext);
-        useEffect(() => {
-          const authServiceInstance = AuthService.mock.instances[0];
-          authServiceInstance.localLogOutAsync.mockResolvedValueOnce();
-          authServiceInstance.getLogoutURI.mockReturnValueOnce(logoutUri);
-          authServiceInstance.loginAsync.mockResolvedValueOnce();
-          logOutResPromise = handleRedirectAsync("testAuthCode").then(() => {
-            return logOutAsync();
-          });
-        }, []);
-        return <View>test</View>;
-      };
+    it.each([
+      { showInRecents: true, createNewTask: true },
+      { showInRecents: true, createNewTask: false },
+      { showInRecents: false, createNewTask: true },
+    ])(
+      "with showRecents: $showInRecents & createNewTask: $createNewTask calls WebBrowser.OpenBrowserAsyn correctly & sets isAuthentic false & returns browser result",
+      async ({ showInRecents, createNewTask }) => {
+        let logOutResPromise;
+        const logoutUri = "testLogoutUri";
+        const browserRes = "mockedBrowserResult";
+        WebBrowser.openAuthSessionAsync.mockResolvedValueOnce(browserRes);
+        const Comp = () => {
+          const { logOutAsync, handleRedirectAsync } = useContext(AuthContext);
+          useEffect(() => {
+            const authServiceInstance = AuthService.mock.instances[0];
+            authServiceInstance.localLogOutAsync.mockResolvedValueOnce();
+            authServiceInstance.getLogoutURI.mockReturnValueOnce(logoutUri);
+            authServiceInstance.loginAsync.mockResolvedValueOnce();
+            logOutResPromise = handleRedirectAsync("testAuthCode").then(() => {
+              return logOutAsync();
+            });
+          }, []);
+          return <View>test</View>;
+        };
 
-      const redirectURI = "protocol://redirectUri";
+        const redirectURI = "protocol://redirectUri";
 
-      render(
-        <AuthProvider
-          redirectURI={redirectURI}
-          showInRecents={true}
-          createNewTask={true}
-        >
-          <Comp />
-        </AuthProvider>
-      );
+        render(
+          <AuthProvider
+            redirectURI={redirectURI}
+            showInRecents={showInRecents}
+            createNewTask={createNewTask}
+          >
+            <Comp />
+          </AuthProvider>
+        );
 
-      await waitFor(() => expect(logOutResPromise).resolves.toBe(browserRes));
-      expect(WebBrowser.openBrowserAsync).toBeCalledTimes(1);
-      expect(WebBrowser.openBrowserAsync).toBeCalledWith(logoutUri);
-      expect(isAuthenticVal).toBe(false);
-    });
+        await waitFor(() => expect(logOutResPromise).resolves.toBe(browserRes));
+        expect(WebBrowser.openAuthSessionAsync).toBeCalledTimes(1);
+        expect(WebBrowser.openAuthSessionAsync).toBeCalledWith(
+          logoutUri,
+          redirectURI,
+          {
+            showInRecents,
+            createTask: createNewTask,
+          }
+        );
+        expect(isAuthenticVal).toBe(false);
+      }
+    );
 
     it("sets isAuthenticate to false even when exception occurs", async () => {
       let logOutResPromise;
       const logoutUri = "testLogoutUri";
       const error = "test Error";
-      WebBrowser.openBrowserAsync.mockImplementationOnce(() => {
+      WebBrowser.openAuthSessionAsync.mockImplementationOnce(() => {
         throw new Error(error);
       });
       const Comp = () => {
@@ -392,7 +406,7 @@ describe("AuthProvider", () => {
       );
 
       await waitFor(() => expect(logOutResPromise).rejects.toThrowError(error));
-      expect(WebBrowser.openBrowserAsync).toBeCalledTimes(1);
+      expect(WebBrowser.openAuthSessionAsync).toBeCalledTimes(1);
       expect(isAuthenticVal).toBe(false);
     });
   });

@@ -57,25 +57,51 @@ describe("useToken", () => {
           type: "success",
         });
 
-        await waitFor(result.current.getTokensAsync);
+        const expectedRes = {
+          expiresOn: 0,
+          access: "",
+          id: "",
+          error: null,
+          isAuthentic: false,
+          url: undefined,
+        };
 
-        expect(result.current.error).toBe("");
+        await waitFor(() =>
+          expect(result.current.getTokensAsync()).resolves.toStrictEqual(
+            expectedRes
+          )
+        );
+        expect(result.current.error).toBe(null);
         expect(result.current.isLoading).toBe(false);
       });
 
-      it("sets isLoading false and error corrects when signInAsync receives password reset redirect", async () => {
+      it("sets isLoading false and url correctly when signInAsync receives password reset redirect", async () => {
         const { result } = renderHook(() => useToken());
         const { result: contextRes } = renderHook(() =>
           useContext(AuthContext)
         );
-        contextRes.current.signInAsync.mockResolvedValueOnce({
+        const signInResult = {
           type: "success",
-          url: "AADB2C90118",
-        });
+          url: "https://AADB2C90118",
+        };
+        contextRes.current.signInAsync.mockResolvedValueOnce(signInResult);
 
-        await waitFor(result.current.getTokensAsync);
+        const expectedRes = {
+          expiresOn: 0,
+          access: "",
+          id: "",
+          error: null,
+          isAuthentic: false,
+          url: signInResult.url,
+        };
 
-        expect(result.current.error).toBe("Resetting password AADB2C90118");
+        await waitFor(() =>
+          expect(result.current.getTokensAsync()).resolves.toStrictEqual(
+            expectedRes
+          )
+        );
+
+        expect(result.current.error).toBe(null);
         expect(result.current.isLoading).toBe(false);
       });
 
@@ -128,16 +154,44 @@ describe("useToken", () => {
         const { result: contextRes } = renderHook(() =>
           useContext(AuthContext)
         );
-        contextRes.current.signInAsync.mockResolvedValueOnce({
+        const signInResult = {
           type: "success",
-        });
+          url: "testUrl",
+        };
+        contextRes.current.signInAsync.mockResolvedValueOnce(signInResult);
 
         const expectedRes = {
           expiresOn: 0,
           access: "",
           id: "",
-          error: "",
+          error: null,
           isAuthentic: false,
+          url: signInResult.url,
+        };
+        await waitFor(() =>
+          expect(result.current.getTokensAsync()).resolves.toStrictEqual(
+            expectedRes
+          )
+        );
+      });
+
+      it("returns handleSignInAsync result when signInResponse.url is not defined", async () => {
+        const { result } = renderHook(() => useToken());
+        const { result: contextRes } = renderHook(() =>
+          useContext(AuthContext)
+        );
+        const signInResult = {
+          type: "success",
+        };
+        contextRes.current.signInAsync.mockResolvedValueOnce(signInResult);
+
+        const expectedRes = {
+          expiresOn: 0,
+          access: "",
+          id: "",
+          error: null,
+          isAuthentic: false,
+          url: undefined,
         };
         await waitFor(() =>
           expect(result.current.getTokensAsync()).resolves.toStrictEqual(
@@ -247,6 +301,7 @@ describe("useToken", () => {
           ...data,
           error: null,
           isAuthentic: true,
+          url: "",
         };
         await waitFor(() =>
           expect(result.current.getTokensAsync()).resolves.toStrictEqual(
@@ -270,6 +325,7 @@ describe("useToken", () => {
           id: "",
           error,
           isAuthentic: true, //because exception doesnot mean current token is invalid
+          url: "",
         };
         await waitFor(() =>
           expect(result.current.getTokensAsync()).resolves.toStrictEqual(data)

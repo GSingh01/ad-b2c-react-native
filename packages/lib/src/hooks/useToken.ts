@@ -1,4 +1,3 @@
-import { WebBrowserAuthSessionResult } from "expo-web-browser";
 import { useContext, useReducer } from "react";
 import { AuthContext } from "../providers/AuthProvider";
 
@@ -27,14 +26,7 @@ export default function useToken() {
 
   const { isLoading, error } = state;
 
-  async function getTokensAsync(): Promise<{
-    access: string;
-    id: string;
-    //time in seconds at which token is expiring
-    expiresOn: number;
-    error: Error | null | WebBrowserAuthSessionResult;
-    isAuthentic: boolean;
-  }> {
+  async function getTokensAsync() {
     if (!isAuthentic) {
       return handleSignInAsync();
     }
@@ -43,28 +35,33 @@ export default function useToken() {
     return getTokenAsyncOrig()
       .then((data) => {
         setState({ isLoading: false, error: "" });
-        return { ...data, error: null, isAuthentic };
+        return { ...data, error: null, isAuthentic, url: "" };
       })
       .catch((ex) => {
         setState({
           isLoading: false,
           error: ex?.message ?? JSON.stringify(ex),
         });
-        return { expiresOn: 0, access: "", id: "", error: ex, isAuthentic };
+        return {
+          expiresOn: 0,
+          id: "",
+          access: "",
+          error: ex,
+          isAuthentic,
+          url: "",
+        };
       });
   }
 
   async function handleSignInAsync() {
     let error: any = null;
+    let url = "";
     try {
       setState({ error: "", isLoading: true });
       if (!isAuthentic) {
         const siginRes = await signInAsync();
-
         if (siginRes?.type === "success") {
-          error = siginRes.url?.includes("AADB2C90118")
-            ? "Resetting password AADB2C90118"
-            : "";
+          url = siginRes.url;
           setState({
             error,
             isLoading: false,
@@ -85,7 +82,14 @@ export default function useToken() {
       });
     }
 
-    return { expiresOn: 0, access: "", id: "", error, isAuthentic };
+    return {
+      expiresOn: 0,
+      access: "",
+      id: "",
+      error,
+      isAuthentic,
+      url,
+    };
   }
   return { isLoading, error, getTokensAsync, isAuthentic };
 }
