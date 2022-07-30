@@ -3628,7 +3628,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"ad-b2c-react-native@2.0.0, ad-b2c-react-native@workspace:packages/lib":
+"ad-b2c-react-native@2.0.1, ad-b2c-react-native@workspace:packages/lib":
   version: 0.0.0-use.local
   resolution: "ad-b2c-react-native@workspace:packages/lib"
   dependencies:
@@ -4237,7 +4237,7 @@ __metadata:
     "@types/babel__core": ^7.1.19
     "@types/react": ~17.0.21
     "@types/react-native": ~0.67.6
-    ad-b2c-react-native: 2.0.0
+    ad-b2c-react-native: 2.0.1
     expo: ^45.0.0
     expo-constants: ~13.1.1
     expo-dev-client: ~1.0.1
