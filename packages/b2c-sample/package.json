@@ -3,11 +3,11 @@
   "name": "b2c-sample",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start --https --localhost",
-    "android": "expo start -a --localhost",
-    "ios": "expo start -i --localhost",
-    "web": "expo start -w --https --localhost",
-    "eject": "expo eject",
+    "start": "npx expo start --https --localhost",
+    "android": "npx expo start -a --localhost",
+    "ios": "npx expo start -i --localhost",
+    "web": "npx expo start -w --https --localhost",
+    "eject": "npx expo eject",
     "cpToBin": "shx cp ../../node_modules/.bin/react-native* ./node_modules/.bin/",
     "postinstall": "expo-yarn-workspaces postinstall & yarn cpToBin"
   },

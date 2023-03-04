@@ -21,7 +21,7 @@
   "installConfig": {
     "hoistingLimits": "workspaces"
   },
-  "packageManager": "yarn@3.1.0",
+  "packageManager": "yarn@3.4.1",
   "devDependencies": {
     "@babel/core": "^7.16.5",
     "@babel/preset-env": "^7.16.5",
